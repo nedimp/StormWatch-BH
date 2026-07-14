@@ -1,4 +1,5 @@
 import { Wind, Droplets, Gauge, Eye, MapPin } from 'lucide-react';
+import type { ElementType } from 'react';
 import type { CurrentConditionDto } from '../../types';
 import { wmoToDisplay, inferWeatherCode, tempColor } from '../../utils/weather';
 

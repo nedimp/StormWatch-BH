@@ -2,6 +2,7 @@
  * Shared weather utility functions used across the frontend.
  */
 
+import type { ElementType } from 'react';
 import {
   Sun, CloudSun, Cloud, CloudFog, CloudDrizzle,
   CloudRain, CloudSnow, CloudHail, CloudLightning,
@@ -19,7 +20,7 @@ export function tempColor(t: number): string {
 }
 
 /** Map a WMO weather code to a Lucide icon, Bosnian label, and color. */
-export function wmoToDisplay(code: number): { Icon: React.ElementType; label: string; color: string } {
+export function wmoToDisplay(code: number): { Icon: ElementType; label: string; color: string } {
   if (code === 0)  return { Icon: Sun,            label: 'Vedro',           color: '#eab308' };
   if (code <= 2)   return { Icon: CloudSun,       label: 'Pretežno vedro',  color: '#f59e0b' };
   if (code === 3)  return { Icon: Cloud,          label: 'Oblačno',         color: '#94a3b8' };

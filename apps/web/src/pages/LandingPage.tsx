@@ -66,20 +66,6 @@ const SEVERITY_COLORS: Record<string, string> = {
 
 const SEV_LABEL: Record<string, string> = { CRITICAL: 'Kritično', HIGH: 'Visoko', MEDIUM: 'Srednje', LOW: 'Nisko' };
 
-function useLiveAlerts() {
-  const [data, setData] = useState<{ count: number; bySeverity: Record<string, number> } | null>(null);
-  useEffect(() => {
-    alertsApi.getActive()
-      .then((res) => {
-        const by: Record<string, number> = {};
-        for (const a of res.data) by[a.severity] = (by[a.severity] ?? 0) + 1;
-        setData({ count: res.count, bySeverity: by });
-      })
-      .catch(() => setData({ count: 0, bySeverity: {} }));
-  }, []);
-  return data;
-}
-
 export function LandingPage() {
   const navigate = useNavigate();
   const liveStats = useLiveStats();
