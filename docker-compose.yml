@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: stormwatch-postgres
+    environment:
+      POSTGRES_DB: stormwatch_bh
+      POSTGRES_USER: stormwatch
+      POSTGRES_PASSWORD: stormwatch
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U stormwatch -d stormwatch_bh']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: stormwatch-redis
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: stormwatch-api
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://stormwatch:stormwatch@postgres:5432/stormwatch_bh
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  weather-worker:
+    build:
+      context: .
+      dockerfile: apps/weather-worker/Dockerfile
+    container_name: stormwatch-worker
+    environment:
+      NODE_ENV: production
+      API_BASE_URL: http://api:3001
+      OPENWEATHERMAP_API_KEY: ${OPENWEATHERMAP_API_KEY}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: stormwatch-web
+    ports:
+      - '80:80'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

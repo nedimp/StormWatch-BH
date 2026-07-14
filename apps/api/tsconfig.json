@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@stormwatch/domain": ["../../packages/domain/src/index.ts"],
+      "@stormwatch/application": ["../../packages/application/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

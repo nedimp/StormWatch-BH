@@ -1,0 +1,34 @@
+{
+  "name": "stormwatch-bh",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real-time severe weather monitoring system for Bosnia and Herzegovina",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "dev:api": "pnpm --filter @stormwatch/api dev",
+    "dev:web": "pnpm --filter @stormwatch/web dev",
+    "dev:worker": "pnpm --filter @stormwatch/weather-worker dev",
+    "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test:coverage",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "db:migrate": "pnpm --filter @stormwatch/api db:migrate",
+    "db:seed": "pnpm --filter @stormwatch/api db:seed"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

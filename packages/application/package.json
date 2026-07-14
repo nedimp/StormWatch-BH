@@ -1,0 +1,31 @@
+{
+  "name": "@stormwatch/application",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Application layer — use cases, ports (interfaces), DTOs",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@stormwatch/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.4.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}
