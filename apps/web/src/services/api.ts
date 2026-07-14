@@ -33,5 +33,7 @@ export const regionsApi = {
 
 export const observationsApi = {
   getCurrent: () =>
-    apiFetch<{ data: CurrentConditionDto[]; count: number; fetchedAt: string }>('/observations/current'),
+    apiFetch<{ data: CurrentConditionDto[]; count: number; fetchedAt: string }>(
+      '/observations/current',
+    ),
 };

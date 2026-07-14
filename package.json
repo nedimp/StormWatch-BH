@@ -32,6 +32,9 @@
     "pnpm": ">=9.0.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "es5-ext"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "es5-ext"
+    ]
   }
 }

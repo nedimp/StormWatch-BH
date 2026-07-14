@@ -8,8 +8,8 @@ const BIH_CENTER: [number, number] = [44.1, 17.6];
 
 const ENTITY_COLOR: Record<string, string> = {
   FBiH: '#60a5fa',
-  RS:   '#f472b6',
-  BD:   '#34d399',
+  RS: '#f472b6',
+  BD: '#34d399',
 };
 
 export function WeatherMap() {
@@ -57,40 +57,63 @@ export function WeatherMap() {
           >
             <Popup>
               <div style={{ minWidth: 200 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
                   <strong style={{ color: '#e2e8f0' }}>{region.localName}</strong>
-                  <span style={{
-                    backgroundColor: (ENTITY_COLOR[region.entity] ?? '#60a5fa') + '30',
-                    color: ENTITY_COLOR[region.entity] ?? '#60a5fa',
-                    padding: '2px 6px',
-                    borderRadius: 4,
-                    fontSize: 11,
-                    fontWeight: 700,
-                  }}>{region.entity}</span>
+                  <span
+                    style={{
+                      backgroundColor: (ENTITY_COLOR[region.entity] ?? '#60a5fa') + '30',
+                      color: ENTITY_COLOR[region.entity] ?? '#60a5fa',
+                      padding: '2px 6px',
+                      borderRadius: 4,
+                      fontSize: 11,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {region.entity}
+                  </span>
                 </div>
                 <p style={{ color: '#64748b', fontSize: 11, margin: '4px 0 0' }}>
                   {region.population.toLocaleString()} stanovnika
                 </p>
                 {alert ? (
-                  <div style={{
-                    marginTop: 8,
-                    padding: '8px',
-                    borderRadius: 8,
-                    border: '1px solid ' + alert.severityColor + '40',
-                    backgroundColor: alert.severityColor + '15',
-                  }}>
-                    <p style={{ color: alert.severityColor, fontWeight: 700, fontSize: 12, margin: 0 }}>{alert.title}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 11, margin: '4px 0 0' }}>{alert.description}</p>
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: '8px',
+                      borderRadius: 8,
+                      border: '1px solid ' + alert.severityColor + '40',
+                      backgroundColor: alert.severityColor + '15',
+                    }}
+                  >
+                    <p
+                      style={{
+                        color: alert.severityColor,
+                        fontWeight: 700,
+                        fontSize: 12,
+                        margin: 0,
+                      }}
+                    >
+                      {alert.title}
+                    </p>
+                    <p style={{ color: '#94a3b8', fontSize: 11, margin: '4px 0 0' }}>
+                      {alert.description}
+                    </p>
                   </div>
                 ) : (
-                  <div style={{
-                    marginTop: 8,
-                    padding: '6px 8px',
-                    borderRadius: 8,
-                    border: '1px solid rgba(52,211,153,0.2)',
-                    backgroundColor: 'rgba(52,211,153,0.1)',
-                  }}>
-                    <p style={{ color: '#34d399', fontSize: 12, margin: 0, fontWeight: 600 }}>✓ Nema upozorenja</p>
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: '6px 8px',
+                      borderRadius: 8,
+                      border: '1px solid rgba(52,211,153,0.2)',
+                      backgroundColor: 'rgba(52,211,153,0.1)',
+                    }}
+                  >
+                    <p style={{ color: '#34d399', fontSize: 12, margin: 0, fontWeight: 600 }}>
+                      ✓ Nema upozorenja
+                    </p>
                   </div>
                 )}
               </div>

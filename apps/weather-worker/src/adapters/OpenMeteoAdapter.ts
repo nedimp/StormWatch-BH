@@ -23,14 +23,29 @@ interface OpenMeteoResponse {
  */
 export const WMO_CODES: Record<number, string> = {
   0: 'Clear sky',
-  1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
-  45: 'Foggy', 48: 'Icy fog',
-  51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
-  61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
-  71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow', 77: 'Snow grains',
-  80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
-  85: 'Slight snow showers', 86: 'Heavy snow showers',
-  95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail',
+  1: 'Mainly clear',
+  2: 'Partly cloudy',
+  3: 'Overcast',
+  45: 'Foggy',
+  48: 'Icy fog',
+  51: 'Light drizzle',
+  53: 'Moderate drizzle',
+  55: 'Dense drizzle',
+  61: 'Slight rain',
+  63: 'Moderate rain',
+  65: 'Heavy rain',
+  71: 'Slight snow',
+  73: 'Moderate snow',
+  75: 'Heavy snow',
+  77: 'Snow grains',
+  80: 'Slight rain showers',
+  81: 'Moderate rain showers',
+  82: 'Violent rain showers',
+  85: 'Slight snow showers',
+  86: 'Heavy snow showers',
+  95: 'Thunderstorm',
+  96: 'Thunderstorm with slight hail',
+  99: 'Thunderstorm with heavy hail',
 };
 
 /**
@@ -46,22 +61,28 @@ export const WMO_CODES: Record<number, string> = {
 export class OpenMeteoAdapter {
   private readonly baseUrl = 'https://api.open-meteo.com/v1/forecast';
 
-  async fetchCurrentConditions(lat: number, lng: number): Promise<RawWeatherData & { weatherCode: number }> {
+  async fetchCurrentConditions(
+    lat: number,
+    lng: number,
+  ): Promise<RawWeatherData & { weatherCode: number }> {
     const url = new URL(this.baseUrl);
     url.searchParams.set('latitude', lat.toFixed(4));
     url.searchParams.set('longitude', lng.toFixed(4));
-    url.searchParams.set('current', [
-      'temperature_2m',
-      'relative_humidity_2m',
-      'precipitation',
-      'rain',
-      'snowfall',
-      'weather_code',
-      'surface_pressure',
-      'wind_speed_10m',
-      'wind_gusts_10m',
-      'visibility',
-    ].join(','));
+    url.searchParams.set(
+      'current',
+      [
+        'temperature_2m',
+        'relative_humidity_2m',
+        'precipitation',
+        'rain',
+        'snowfall',
+        'weather_code',
+        'surface_pressure',
+        'wind_speed_10m',
+        'wind_gusts_10m',
+        'visibility',
+      ].join(','),
+    );
     url.searchParams.set('wind_speed_unit', 'kmh');
     url.searchParams.set('timezone', 'Europe/Sarajevo');
 
@@ -70,7 +91,7 @@ export class OpenMeteoAdapter {
       throw new Error(`Open-Meteo API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json() as OpenMeteoResponse;
+    const data = (await response.json()) as OpenMeteoResponse;
     const c = data.current;
 
     // Open-Meteo gives precipitation in mm for current period (~15 min).
@@ -103,16 +124,19 @@ export class OpenMeteoAdapter {
     const url = new URL(this.baseUrl);
     url.searchParams.set('latitude', lats);
     url.searchParams.set('longitude', lngs);
-    url.searchParams.set('current', [
-      'temperature_2m',
-      'relative_humidity_2m',
-      'precipitation',
-      'weather_code',
-      'surface_pressure',
-      'wind_speed_10m',
-      'wind_gusts_10m',
-      'visibility',
-    ].join(','));
+    url.searchParams.set(
+      'current',
+      [
+        'temperature_2m',
+        'relative_humidity_2m',
+        'precipitation',
+        'weather_code',
+        'surface_pressure',
+        'wind_speed_10m',
+        'wind_gusts_10m',
+        'visibility',
+      ].join(','),
+    );
     url.searchParams.set('wind_speed_unit', 'kmh');
     url.searchParams.set('timezone', 'Europe/Sarajevo');
 

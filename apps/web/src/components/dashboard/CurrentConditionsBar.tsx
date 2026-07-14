@@ -6,27 +6,27 @@ import { formatDistanceToNow } from 'date-fns';
 
 /** WMO weather code → emoji + label */
 function wmoToDisplay(code: number): { emoji: string; label: string } {
-  if (code === 0)                return { emoji: '☀️',  label: 'Vedro' };
-  if (code <= 2)                 return { emoji: '🌤️', label: 'Pretežno vedro' };
-  if (code === 3)                return { emoji: '☁️',  label: 'Oblačno' };
-  if (code <= 48)                return { emoji: '🌫️', label: 'Magla' };
-  if (code <= 57)                return { emoji: '🌦️', label: 'Rosulja' };
-  if (code <= 65)                return { emoji: '🌧️', label: 'Kiša' };
-  if (code <= 77)                return { emoji: '❄️',  label: 'Snijeg' };
-  if (code <= 82)                return { emoji: '🌧️', label: 'Pljusak' };
-  if (code <= 86)                return { emoji: '🌨️', label: 'Snježni pljusak' };
-  if (code === 95)               return { emoji: '⛈️', label: 'Grmljavina' };
-  if (code >= 96)                return { emoji: '⛈️', label: 'Grmljavina s tučom' };
+  if (code === 0) return { emoji: '☀️', label: 'Vedro' };
+  if (code <= 2) return { emoji: '🌤️', label: 'Pretežno vedro' };
+  if (code === 3) return { emoji: '☁️', label: 'Oblačno' };
+  if (code <= 48) return { emoji: '🌫️', label: 'Magla' };
+  if (code <= 57) return { emoji: '🌦️', label: 'Rosulja' };
+  if (code <= 65) return { emoji: '🌧️', label: 'Kiša' };
+  if (code <= 77) return { emoji: '❄️', label: 'Snijeg' };
+  if (code <= 82) return { emoji: '🌧️', label: 'Pljusak' };
+  if (code <= 86) return { emoji: '🌨️', label: 'Snježni pljusak' };
+  if (code === 95) return { emoji: '⛈️', label: 'Grmljavina' };
+  if (code >= 96) return { emoji: '⛈️', label: 'Grmljavina s tučom' };
   return { emoji: '🌡️', label: 'Nepoznato' };
 }
 
 function tempColor(t: number): string {
-  if (t >= 38) return '#ef4444';   // red-500
-  if (t >= 32) return '#f97316';   // orange-500
-  if (t >= 25) return '#eab308';   // yellow-500
-  if (t >= 15) return '#22c55e';   // green-500
-  if (t >= 5)  return '#60a5fa';   // blue-400
-  return '#818cf8';                // indigo-400 (cold)
+  if (t >= 38) return '#ef4444'; // red-500
+  if (t >= 32) return '#f97316'; // orange-500
+  if (t >= 25) return '#eab308'; // yellow-500
+  if (t >= 15) return '#22c55e'; // green-500
+  if (t >= 5) return '#60a5fa'; // blue-400
+  return '#818cf8'; // indigo-400 (cold)
 }
 
 interface ConditionCardProps {
@@ -38,15 +38,16 @@ interface ConditionCardProps {
 function ConditionCard({ obs, hasAlert, alertColor }: ConditionCardProps) {
   // We don't receive WMO code in the obs DTO (it's not stored yet),
   // so infer a rough display from precipitation + wind
-  const code = obs.precipitationMmPerHour >= 10
-    ? 63
-    : obs.precipitationMmPerHour > 0
-    ? 51
-    : obs.windSpeedKmh >= 60
-    ? 3
-    : obs.visibilityKm < 1
-    ? 45
-    : 1;
+  const code =
+    obs.precipitationMmPerHour >= 10
+      ? 63
+      : obs.precipitationMmPerHour > 0
+        ? 51
+        : obs.windSpeedKmh >= 60
+          ? 3
+          : obs.visibilityKm < 1
+            ? 45
+            : 1;
 
   const { emoji, label } = wmoToDisplay(code);
   const tColor = tempColor(obs.temperatureCelsius);
@@ -70,15 +71,16 @@ function ConditionCard({ obs, hasAlert, alertColor }: ConditionCardProps) {
       )}
 
       {/* Station name */}
-      <p className="text-[11px] font-semibold leading-tight"
-        style={{ color: hasAlert ? alertColor : '#94a3b8' }}>
+      <p
+        className="text-[11px] font-semibold leading-tight"
+        style={{ color: hasAlert ? alertColor : '#94a3b8' }}
+      >
         {obs.stationName}
       </p>
 
       {/* Temperature — big focal point */}
       <div className="flex items-end gap-1">
-        <span className="text-3xl font-black leading-none tabular-nums"
-          style={{ color: tColor }}>
+        <span className="text-3xl font-black leading-none tabular-nums" style={{ color: tColor }}>
           {Math.round(obs.temperatureCelsius)}
         </span>
         <span className="mb-0.5 text-sm font-medium text-slate-500">°C</span>
@@ -101,19 +103,22 @@ function ConditionCard({ obs, hasAlert, alertColor }: ConditionCardProps) {
         <div>
           <p className="text-[9px] uppercase tracking-wide text-slate-600">Vlažnost</p>
           <p className="text-[11px] font-semibold text-slate-300">
-            {Math.round(obs.humidityPercent)}<span className="text-[9px] text-slate-500">%</span>
+            {Math.round(obs.humidityPercent)}
+            <span className="text-[9px] text-slate-500">%</span>
           </p>
         </div>
         <div>
           <p className="text-[9px] uppercase tracking-wide text-slate-600">Pritisak</p>
           <p className="text-[11px] font-semibold text-slate-300">
-            {Math.round(obs.pressureHpa)}<span className="text-[9px] text-slate-500"> hPa</span>
+            {Math.round(obs.pressureHpa)}
+            <span className="text-[9px] text-slate-500"> hPa</span>
           </p>
         </div>
         <div>
           <p className="text-[9px] uppercase tracking-wide text-slate-600">Padavine</p>
           <p className="text-[11px] font-semibold text-slate-300">
-            {obs.precipitationMmPerHour.toFixed(1)}<span className="text-[9px] text-slate-500"> mm/h</span>
+            {obs.precipitationMmPerHour.toFixed(1)}
+            <span className="text-[9px] text-slate-500"> mm/h</span>
           </p>
         </div>
       </div>
@@ -168,14 +173,14 @@ export function CurrentConditionsBar() {
         <span className="text-[11px] font-medium uppercase tracking-wider text-slate-600">
           Trenutni uslovi — {observations.length} stanica
         </span>
-        <span className="text-[10px] text-slate-700">
-          Open-Meteo · ažurirano {updatedLabel}
-        </span>
+        <span className="text-[10px] text-slate-700">Open-Meteo · ažurirano {updatedLabel}</span>
       </div>
 
       {/* Horizontally scrollable strip */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
-        style={{ scrollbarWidth: 'none' }}>
+      <div
+        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+        style={{ scrollbarWidth: 'none' }}
+      >
         {observations.map((obs) => {
           const alert = alertsByRegion.get(obs.regionId);
           return (
