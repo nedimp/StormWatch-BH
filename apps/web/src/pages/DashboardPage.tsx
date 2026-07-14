@@ -70,7 +70,7 @@ export function DashboardPage() {
   );
 
   return (
-    <div className="flex h-screen flex-col bg-[#0f1117] overflow-hidden">
+    <div className="flex flex-col bg-[#0f1117] overflow-hidden" style={{ height: '100dvh' }}>
 
       {/* ── Shared floating nav (desktop only) ── */}
       <TopNav page="dashboard" />
