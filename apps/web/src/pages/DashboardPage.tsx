@@ -1,7 +1,8 @@
 import { Suspense, lazy, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CloudLightning, Activity, Thermometer, RefreshCw,
-  BellRing, Map as MapIcon,
+  BellRing, Map as MapIcon, Home,
 } from 'lucide-react';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
 import { AlertList } from '../components/alerts/AlertList';
@@ -17,8 +18,8 @@ type Tab = 'alerts' | 'conditions';
 
 export function DashboardPage() {
   useWeatherSocket();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('alerts');
-  // Mobile: which view is showing — map or the data panel
   const [mobileView, setMobileView] = useState<'map' | Tab>('map');
   const alerts = useAlertStore((s) => s.alerts);
 
@@ -70,24 +71,36 @@ export function DashboardPage() {
 
   return (
     <div className="flex h-screen flex-col bg-[#0f1117] overflow-hidden">
-      {/* ── Header — hidden on mobile (bottom nav used instead) ── */}
+
+      {/* ── Desktop header ── */}
       <header className="hidden md:flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2.5 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-lg shadow-indigo-900/50">
-            <CloudLightning size={14} className="text-white" strokeWidth={2} />
-          </div>
-          <div>
+        {/* Left: logo + home link */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:border-indigo-600 hover:text-indigo-400"
+            title="Nazad na početnu"
+          >
+            <Home size={12} />
+            <span className="hidden lg:inline">Početna</span>
+          </button>
+          <div className="h-4 w-px bg-slate-700" />
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-lg shadow-indigo-900/50">
+              <CloudLightning size={14} className="text-white" strokeWidth={2} />
+            </div>
             <h1 className="text-sm font-bold text-slate-100 leading-tight">StormWatch BH</h1>
-            <p className="text-[10px] text-slate-500 hidden sm:block">Praćenje nevremena · Bosna i Hercegovina</p>
           </div>
         </div>
+
+        {/* Right: stats + API docs */}
         <div className="flex items-center gap-2">
           <StatsBar compact />
           <a
             href="http://localhost:3001/docs"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:block rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-400 transition hover:border-indigo-600 hover:text-indigo-400"
+            className="hidden lg:block rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-400 transition hover:border-indigo-600 hover:text-indigo-400"
           >
             API Docs
           </a>
@@ -120,7 +133,6 @@ export function DashboardPage() {
       {/* ── MOBILE layout (<md) ── */}
       <div className="flex md:hidden flex-col flex-1 overflow-hidden">
         {mobileView === 'map' ? (
-          /* Full-screen map on mobile */
           <div className="relative flex-1 overflow-hidden">
             <Suspense fallback={
               <div className="flex h-full items-center justify-center bg-slate-900 text-slate-600 text-sm gap-2">
@@ -132,7 +144,6 @@ export function DashboardPage() {
             </Suspense>
           </div>
         ) : (
-          /* Data panel — scrollable */
           <div className="flex-1 overflow-hidden bg-slate-900">
             {sidebarContent}
           </div>
@@ -140,6 +151,16 @@ export function DashboardPage() {
 
         {/* Mobile bottom nav */}
         <nav className="shrink-0 flex border-t border-slate-800 bg-slate-900">
+          {/* Home → landing page */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold transition text-slate-600 hover:text-slate-400"
+          >
+            <Home size={20} strokeWidth={1.5} />
+            Početna
+          </button>
+
+          {/* Map */}
           <button
             onClick={() => setMobileView('map')}
             className={
@@ -150,6 +171,8 @@ export function DashboardPage() {
             <MapIcon size={20} strokeWidth={1.5} />
             Karta
           </button>
+
+          {/* Alerts */}
           <button
             onClick={() => { setMobileView('alerts'); setActiveTab('alerts'); }}
             className={
@@ -167,6 +190,8 @@ export function DashboardPage() {
             </div>
             Upozorenja
           </button>
+
+          {/* Conditions */}
           <button
             onClick={() => { setMobileView('conditions'); setActiveTab('conditions'); }}
             className={
@@ -179,6 +204,7 @@ export function DashboardPage() {
           </button>
         </nav>
       </div>
+
     </div>
   );
 }

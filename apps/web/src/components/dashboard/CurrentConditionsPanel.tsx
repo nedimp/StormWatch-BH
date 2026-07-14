@@ -1,13 +1,67 @@
 import {
   Sun, CloudSun, Cloud, CloudFog, CloudDrizzle,
   CloudRain, CloudSnow, CloudHail, CloudLightning,
-  Wind, Droplets, Gauge, Eye, Thermometer, Clock,
+  Wind, Droplets, Gauge, Eye, Thermometer, Clock, MapPin,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { observationsApi } from '../../services/api';
 import { useAlertStore } from '../../store/alertStore';
 import type { CurrentConditionDto } from '../../types';
 import { format } from 'date-fns';
+
+/** Reverse-geocode lat/lng → city name using free Nominatim API */
+async function reverseGeocode(lat: number, lng: number): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bs`,
+      { headers: { 'User-Agent': 'StormWatch-BH/1.0' } },
+    );
+    const data = await res.json() as { address?: { city?: string; town?: string; village?: string; municipality?: string } };
+    const addr = data.address ?? {};
+    return addr.city ?? addr.town ?? addr.village ?? addr.municipality ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Find nearest station to given coordinates */
+function nearestStation(
+  stations: CurrentConditionDto[],
+  lat: number,
+  lng: number,
+): string | null {
+  let best: string | null = null;
+  let bestDist = Infinity;
+  for (const s of stations) {
+    const d = Math.hypot(s.latitude - lat, s.longitude - lng);
+    if (d < bestDist) { bestDist = d; best = s.stationId; }
+  }
+  return best;
+}
+
+function useUserLocation(stations: CurrentConditionDto[]) {
+  const [cityName, setCityName] = useState<string | null>(null);
+  const [nearestId, setNearestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (stations.length === 0) return;
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const { latitude, longitude } = coords;
+        setNearestId(nearestStation(stations, latitude, longitude));
+        const city = await reverseGeocode(latitude, longitude);
+        setCityName(city);
+      },
+      () => { /* permission denied — silent */ },
+      { timeout: 5000 },
+    );
+  }, [stations.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return { cityName, nearestId };
+}
 
 function wmoToDisplay(code: number): { Icon: React.ElementType; label: string; color: string } {
   if (code === 0)  return { Icon: Sun,           label: 'Vedro',             color: '#eab308' };
@@ -41,10 +95,11 @@ function tempColor(t: number): string {
   return '#818cf8';
 }
 
-function StationRow({ obs, hasAlert, alertColor }: {
+function StationRow({ obs, hasAlert, alertColor, isNearest }: {
   obs: CurrentConditionDto;
   hasAlert: boolean;
   alertColor?: string;
+  isNearest?: boolean;
 }) {
   const { Icon, label, color } = wmoToDisplay(inferCode(obs));
   const tColor = tempColor(obs.temperatureCelsius);
@@ -53,15 +108,21 @@ function StationRow({ obs, hasAlert, alertColor }: {
     <div
       className="rounded-lg border px-3 py-2.5 transition-colors"
       style={{
-        borderColor: hasAlert ? alertColor + '50' : '#1e293b',
-        backgroundColor: hasAlert ? alertColor + '08' : 'transparent',
+        borderColor: hasAlert ? alertColor + '50' : isNearest ? '#6366f1' : '#1e293b',
+        backgroundColor: hasAlert ? alertColor + '08' : isNearest ? 'rgba(99,102,241,0.06)' : 'transparent',
       }}
     >
-      {/* Row 1: name + condition + temperature */}
+      {/* Station name + condition + temperature */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <div className="flex items-center gap-1.5 min-w-0">
           <Icon size={13} style={{ color, flexShrink: 0 }} strokeWidth={1.5} />
           <span className="text-[11px] font-semibold text-slate-300 truncate">{obs.stationName}</span>
+          {isNearest && (
+            <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+              <MapPin size={7} />
+              Vi ste tu
+            </span>
+          )}
           {hasAlert && (
             <span className="shrink-0 rounded px-1 py-0.5 text-[8px] font-black"
               style={{ backgroundColor: alertColor + '25', color: alertColor }}>
@@ -110,6 +171,7 @@ export function CurrentConditionsPanel() {
   });
 
   const observations = data?.data ?? [];
+  const { cityName, nearestId } = useUserLocation(observations);
 
   if (isLoading && observations.length === 0) {
     return (
@@ -142,13 +204,27 @@ export function CurrentConditionsPanel() {
           <Clock size={10} />
           <span className="text-[10px]">ažurirano u {updatedLabel}</span>
         </div>
-        <span className="text-[10px] text-slate-700">{observations.length} stanica · Open-Meteo</span>
+        <div className="flex items-center gap-2">
+          {cityName && (
+            <span className="flex items-center gap-1 text-[10px] text-indigo-400 font-medium">
+              <MapPin size={9} />
+              {cityName}
+            </span>
+          )}
+          <span className="text-[10px] text-slate-700">{observations.length} stanica</span>
+        </div>
       </div>
       <div className="divide-y divide-slate-800/60">
         {observations.map((obs) => {
           const alert = alertsByRegion.get(obs.regionId);
           return (
-            <StationRow key={obs.stationId} obs={obs} hasAlert={!!alert} alertColor={alert?.severityColor} />
+            <StationRow
+              key={obs.stationId}
+              obs={obs}
+              hasAlert={!!alert}
+              alertColor={alert?.severityColor}
+              isNearest={obs.stationId === nearestId}
+            />
           );
         })}
       </div>

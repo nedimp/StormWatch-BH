@@ -21,6 +21,7 @@ export interface AppContainer {
   alertRepository: IWeatherAlertRepository;
   observationRepository: InMemoryObservationRepository;
   subscriptionRepository: DrizzleSubscriptionRepository;
+  notificationService: GmailNotificationService;
   eventBus: InProcessEventBus;
   getActiveAlertsUseCase: GetActiveAlertsUseCase;
   recordObservationUseCase: RecordObservationUseCase;
@@ -53,6 +54,7 @@ export function buildContainer(): AppContainer {
     alertRepository,
     observationRepository,
     subscriptionRepository,
+    notificationService,
     eventBus,
     getActiveAlertsUseCase,
     recordObservationUseCase,

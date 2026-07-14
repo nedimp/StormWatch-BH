@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import type { INotificationService } from '@stormwatch/application';
 import type { AlertDto } from '@stormwatch/application';
-import { buildAlertEmailHtml, buildAlertEmailSubject } from '../email/alertEmailTemplate.js';
+import { buildAlertEmailHtml, buildAlertEmailSubject, buildWelcomeEmailHtml, buildWelcomeEmailSubject } from '../email/alertEmailTemplate.js';
 import type { DrizzleSubscriptionRepository } from '../repositories/DrizzleSubscriptionRepository.js';
 import { logger } from '../logger.js';
 
@@ -52,5 +52,23 @@ export class GmailNotificationService implements INotificationService {
 
   async sendAlertResolved(_alertId: string, _regionId: string): Promise<void> {
     // no-op for now
+  }
+
+  async sendWelcomeEmail(email: string): Promise<void> {
+    if (!this.transporter) {
+      logger.warn({ email }, '[DRY RUN] Would send welcome email');
+      return;
+    }
+    try {
+      await this.transporter.sendMail({
+        from: `"StormWatch BH" <${process.env['GMAIL_USER']}>`,
+        to: email,
+        subject: buildWelcomeEmailSubject(),
+        html: buildWelcomeEmailHtml(email),
+      });
+      logger.info({ email }, 'Welcome email sent');
+    } catch (err) {
+      logger.error({ email, err }, 'Failed to send welcome email');
+    }
   }
 }
