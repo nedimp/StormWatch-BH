@@ -63,11 +63,16 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   // ── Static frontend (production) ─────────────────────────────────────
   const staticPath = process.env['STATIC_PATH'];
   if (staticPath && existsSync(staticPath)) {
-    await app.register(staticFiles, { root: staticPath, prefix: '/', wildcard: false });
+    await app.register(staticFiles, { root: staticPath, prefix: '/' });
     app.setNotFoundHandler((req, reply) => {
       // Only serve SPA index.html for frontend routes — never for assets/API/WS
       const url = req.url.split('?')[0];
-      if (url.startsWith('/assets/') || url.startsWith('/api/') || url.startsWith('/ws') || url.startsWith('/docs')) {
+      if (
+        url.startsWith('/assets/') ||
+        url.startsWith('/api/') ||
+        url.startsWith('/ws') ||
+        url.startsWith('/docs')
+      ) {
         void reply.code(404).send({ error: 'Not found' });
       } else {
         void reply.sendFile('index.html');
