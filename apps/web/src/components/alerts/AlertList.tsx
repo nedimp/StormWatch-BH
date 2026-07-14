@@ -73,7 +73,7 @@ export function AlertList() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Pretraži upozorenja..."
-          className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+          className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-400"
         />
       </div>
       {filtered.length === 0 && query ? (

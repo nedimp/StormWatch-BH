@@ -59,8 +59,8 @@ function SubscribeSection() {
     <section id="subscribe" className="px-6 py-20 border-t border-slate-800/60">
       <div className="mx-auto max-w-xl text-center">
         <div className="mb-5 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-500/10">
-            <Bell size={22} className="text-indigo-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-300 bg-slate-500/10">
+            <Bell size={22} className="text-slate-600" />
           </div>
         </div>
         <h2 className="mb-3 text-2xl font-black text-white">Primajte upozorenja na email</h2>
@@ -89,12 +89,12 @@ function SubscribeSection() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="vasa@email.com"
               required
-              className="flex-1 rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:border-slate-500 focus:ring-1 focus:ring-slate-200"
             />
             <button
               type="submit"
               disabled={state === 'loading'}
-              className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+              className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-slate-700 disabled:opacity-60"
             >
               {state === 'loading'
                 ? <><Loader2 size={15} className="animate-spin" /> Slanje...</>
@@ -141,17 +141,17 @@ export function LandingPage() {
       {/* ── Hero ── */}
       <section className="relative flex flex-col items-center justify-center px-6 pt-20 pb-20 sm:pt-40 text-center overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-100 blur-3xl" />
+          <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100 blur-3xl" />
         </div>
 
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-medium text-indigo-600">Live praćenje · Bosna i Hercegovina</span>
+          <span className="text-xs font-medium text-slate-900">Live praćenje · Bosna i Hercegovina</span>
         </div>
 
         <h1 className="mb-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
           Nevrijeme u BiH —{' '}
-          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <span className="text-slate-600">
             uvijek na oku
           </span>
         </h1>
@@ -161,11 +161,11 @@ export function LandingPage() {
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-500">
+            className="flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-700">
             Otvori Dashboard <ArrowRight size={15} />
           </button>
           <a href="#subscribe"
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-indigo-300 hover:text-indigo-600">
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900">
             <Bell size={14} /> Pretplatite se
           </a>
         </div>
@@ -239,9 +239,9 @@ export function LandingPage() {
 
       {/* ── CTA banner ── */}
       <section className="px-6 py-20">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-purple-50 p-10 text-center shadow-sm">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-10 text-center shadow-sm">
           <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-200">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 shadow-lg shadow-slate-200">
               <CloudLightning size={22} className="text-white" strokeWidth={2} />
             </div>
           </div>
@@ -250,7 +250,7 @@ export function LandingPage() {
             Pratite live podatke za 14 stanica, pregledajte aktivna upozorenja i pratite situaciju na mapi.
           </p>
           <button onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-500">
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-700">
             Otvori Dashboard <ArrowRight size={15} />
           </button>
         </div>
@@ -259,7 +259,7 @@ export function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-slate-100 px-6 py-8 text-center bg-white">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-600">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-900">
             <CloudLightning size={11} className="text-white" strokeWidth={2} />
           </div>
           <span className="text-xs font-bold text-slate-600">StormWatch BH</span>
@@ -273,7 +273,7 @@ export function LandingPage() {
       <nav className="fixed bottom-0 inset-x-0 z-50 flex sm:hidden border-t border-slate-200 bg-white" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-indigo-600"
+          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-900"
         >
           <Home size={20} strokeWidth={1.5} />
           Početna

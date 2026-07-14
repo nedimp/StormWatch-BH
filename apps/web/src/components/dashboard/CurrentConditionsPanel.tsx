@@ -118,7 +118,7 @@ function StationRow({ obs, hasAlert, alertColor, isNearest }: {
           <Icon size={13} style={{ color, flexShrink: 0 }} strokeWidth={1.5} />
           <span className="text-[11px] font-semibold text-slate-700 truncate">{obs.stationName}</span>
           {isNearest && (
-            <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+            <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-slate-900 text-white">
               <MapPin size={7} />
               Vi ste tu
             </span>
@@ -208,7 +208,7 @@ export function CurrentConditionsPanel() {
         </div>
         <div className="flex items-center gap-2">
           {cityName && (
-            <span className="flex items-center gap-1 text-[10px] text-indigo-500 font-medium">
+            <span className="flex items-center gap-1 text-[10px] text-slate-600 font-medium">
               <MapPin size={9} />
               {cityName}
             </span>
@@ -225,7 +225,7 @@ export function CurrentConditionsPanel() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Pretraži grad..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-7 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-7 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400"
           />
         </div>
       </div>

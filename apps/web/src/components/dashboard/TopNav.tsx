@@ -20,7 +20,7 @@ export function TopNav({ page }: TopNavProps) {
             <>
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:border-indigo-300 hover:text-indigo-600"
+                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:border-slate-400 hover:text-slate-800"
               >
                 <Home size={12} />
                 Početna
@@ -32,7 +32,7 @@ export function TopNav({ page }: TopNavProps) {
             onClick={() => navigate('/')}
             className="flex items-center gap-2 group"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-sm transition group-hover:bg-indigo-500">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 shadow-sm transition group-hover:bg-slate-700">
               <CloudLightning size={13} className="text-white" strokeWidth={2} />
             </div>
             <span className="text-sm font-bold text-slate-800 tracking-tight">StormWatch BH</span>
@@ -45,7 +45,7 @@ export function TopNav({ page }: TopNavProps) {
             <>
               <a
                 href="#subscribe"
-                className="hidden md:block text-xs font-medium text-slate-500 transition hover:text-indigo-600"
+                className="hidden md:block text-xs font-medium text-slate-500 transition hover:text-slate-900"
               >
                 Pretplata
               </a>
@@ -55,7 +55,7 @@ export function TopNav({ page }: TopNavProps) {
               </div>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500"
+                className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-700"
               >
                 Dashboard <ArrowRight size={11} />
               </button>
@@ -67,7 +67,7 @@ export function TopNav({ page }: TopNavProps) {
                 href="/docs"
                 target="_blank"
                 rel="noreferrer"
-                className="hidden lg:block rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-500 transition hover:border-indigo-300 hover:text-indigo-600"
+                className="hidden lg:block rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-500 transition hover:border-slate-400 hover:text-slate-900"
               >
                 API Docs
               </a>

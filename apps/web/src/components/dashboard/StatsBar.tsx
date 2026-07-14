@@ -43,9 +43,9 @@ export function StatsBar({ compact = false }: StatsBarProps) {
           );
         })}
         {hasCritical && (
-          <span className="flex items-center gap-1 rounded-md border border-purple-200 bg-purple-50 px-2 py-0.5 animate-pulse">
-            <Siren size={10} className="text-purple-500" />
-            <span className="text-[10px] font-bold text-purple-600">UZBUNA</span>
+          <span className="flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2 py-0.5 animate-pulse">
+            <Siren size={10} className="text-red-500" />
+            <span className="text-[10px] font-bold text-red-600">UZBUNA</span>
           </span>
         )}
         <div className="flex items-center gap-1 ml-1">
@@ -81,9 +81,9 @@ export function StatsBar({ compact = false }: StatsBarProps) {
         })}
       </div>
       {hasCritical && (
-        <div className="ml-auto flex items-center gap-2 rounded-lg border border-purple-500/25 bg-purple-500/10 px-3 py-1.5 animate-pulse">
-          <Siren size={13} className="text-purple-400" />
-          <span className="text-xs font-bold text-purple-300 tracking-wide">KRITIČNA UZBUNA</span>
+        <div className="ml-auto flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 animate-pulse">
+          <Siren size={13} className="text-red-500" />
+          <span className="text-xs font-bold text-red-600 tracking-wide">KRITIČNA UZBUNA</span>
         </div>
       )}
       <div className={'flex items-center gap-1.5 ' + (hasCritical ? '' : 'ml-auto')}>
