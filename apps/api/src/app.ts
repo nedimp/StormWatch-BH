@@ -2,9 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import staticFiles from '@fastify/static';
-import { existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { existsSync } from 'node:fs';
 import websocket from '@fastify/websocket';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
@@ -25,9 +23,7 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   // ── Security ─────────────────────────────────────────────────────────────
   await app.register(helmet, { contentSecurityPolicy: false });
   await app.register(cors, {
-    origin: process.env['CORS_ORIGIN'] !== undefined
-      ? process.env['CORS_ORIGIN'].split(',')
-      : ['http://localhost:5173'],
+    origin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173',
     credentials: true,
   });
   await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
@@ -64,7 +60,14 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   // ── DI Container ─────────────────────────────────────────────────────────
   const container = buildContainer();
   app.decorate('container', container);
-
+  // ── Static frontend (production) ─────────────────────────────────────
+  const staticPath = process.env['STATIC_PATH'];
+  if (staticPath && existsSync(staticPath)) {
+    await app.register(staticFiles, { root: staticPath, prefix: '/', wildcard: false });
+    app.setNotFoundHandler((_req, reply) => {
+      void reply.sendFile('index.html');
+    });
+  }
   // ── Routes ───────────────────────────────────────────────────────────────
   await app.register(healthRoutes, { prefix: '/health' });
   await app.register(alertRoutes, { prefix: '/api/v1/alerts' });
@@ -72,24 +75,6 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   await app.register(regionRoutes, { prefix: '/api/v1/regions' });
   await app.register(subscriptionRoutes, { prefix: '/api/v1/subscriptions' });
   await app.register(websocketRoutes, { prefix: '/ws' });
-
-  // ── Static frontend (production: served alongside API on same port) ───────
-  const __dirname = dirname(fileURLToPath(import.meta.url));
-  const staticPath = process.env['STATIC_PATH'] ??
-    join(__dirname, '..', '..', '..', 'web', 'dist');
-
-  if (existsSync(staticPath)) {
-    await app.register(staticFiles, {
-      root: staticPath,
-      prefix: '/',
-      wildcard: false,
-    });
-    // SPA fallback — serve index.html for all non-API routes
-    app.setNotFoundHandler((_req, reply) => {
-      reply.sendFile('index.html');
-    });
-    logger.info({ staticPath }, 'Serving frontend static files');
-  }
 
   return app;
 }
