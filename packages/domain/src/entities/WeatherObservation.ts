@@ -32,7 +32,8 @@ export class WeatherObservation extends AggregateRoot<string> {
   static create(id: string, props: WeatherObservationProps): Result<WeatherObservation> {
     if (!id.trim()) return err('Observation ID cannot be empty');
     if (!props.stationId.trim()) return err('Station ID cannot be empty');
-    if (props.observedAt > new Date()) return err('Observation cannot be in the future');
+    const tenMinutesFromNow = new Date(Date.now() + 10 * 60 * 1000);
+    if (props.observedAt > tenMinutesFromNow) return err('Observation cannot be in the future');
 
     const observation = new WeatherObservation(id, props);
     observation.addDomainEvent(
