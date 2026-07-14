@@ -60,7 +60,7 @@ export function WeatherMap() {
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
-                  <strong style={{ color: '#e2e8f0' }}>{region.localName}</strong>
+                  <strong style={{ color: '#1e293b' }}>{region.localName}</strong>
                   <span
                     style={{
                       backgroundColor: (ENTITY_COLOR[region.entity] ?? '#60a5fa') + '30',
@@ -97,7 +97,7 @@ export function WeatherMap() {
                     >
                       {alert.title}
                     </p>
-                    <p style={{ color: '#94a3b8', fontSize: 11, margin: '4px 0 0' }}>
+                    <p style={{ color: '#64748b', fontSize: 11, margin: '4px 0 0' }}>
                       {alert.description}
                     </p>
                   </div>

@@ -52,17 +52,37 @@ export function DashboardPage() {
       {/* ── MOBILE layout (<md) ── */}
       <div className="flex md:hidden flex-col flex-1 overflow-hidden">
         {mobileView === 'map' ? (
-          <Suspense
-            fallback={
-              <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">
-                Učitavanje...
-              </div>
-            }
-          >
-            <div className="flex-1 overflow-hidden">
-              <WeatherMap />
+          <div className="flex-1 overflow-y-auto">
+            {/* Framed map */}
+            <div className="relative border-b border-slate-200" style={{ height: '55vh', minHeight: 280 }}>
+              <Suspense fallback={
+                <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
+              }>
+                <WeatherMap />
+              </Suspense>
             </div>
-          </Suspense>
+            {/* Legend */}
+            <div className="p-4 bg-white">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Legenda</p>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {[
+                  { color: '#60a5fa', label: 'FBiH — Federacija BiH' },
+                  { color: '#f472b6', label: 'RS — Republika Srpska' },
+                  { color: '#34d399', label: 'BD — Brčko Distrikt' },
+                ].map(({ color, label }) => (
+                  <div key={label} className="flex items-center gap-2">
+                    <span className="shrink-0 h-3 w-3 rounded-full" style={{ backgroundColor: color, opacity: 0.7 }} />
+                    <span className="text-xs text-slate-600">{label}</span>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2">
+                  <span className="shrink-0 h-5 w-5 rounded-full border-2 border-white shadow" style={{ backgroundColor: '#ef4444' }} />
+                  <span className="text-xs text-slate-600">Aktivno upozorenje</span>
+                </div>
+              </div>
+              <p className="mt-3 text-[10px] text-slate-400">Kliknite na marker za detalje regije.</p>
+            </div>
+          </div>
         ) : mobileView === 'alerts' ? (
           <div className="flex-1 overflow-y-auto p-3">
             <AlertList />
