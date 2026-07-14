@@ -8,7 +8,7 @@ const BIH_CENTER: [number, number] = [44.1, 17.6];
 
 const ENTITY_COLOR: Record<string, string> = {
   FBiH: '#60a5fa',
-  RS: '#f472b6',
+  RS: '#fb923c',
   BD: '#34d399',
 };
 

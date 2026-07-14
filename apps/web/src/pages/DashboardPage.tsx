@@ -67,7 +67,7 @@ export function DashboardPage() {
               <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                 {[
                   { color: '#60a5fa', label: 'FBiH — Federacija BiH' },
-                  { color: '#f472b6', label: 'RS — Republika Srpska' },
+                  { color: '#fb923c', label: 'RS — Republika Srpska' },
                   { color: '#34d399', label: 'BD — Brčko Distrikt' },
                 ].map(({ color, label }) => (
                   <div key={label} className="flex items-center gap-2">

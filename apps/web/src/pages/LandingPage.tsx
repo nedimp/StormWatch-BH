@@ -15,7 +15,7 @@ import {
   Loader2,
   Mail,
 } from 'lucide-react';
-import { observationsApi, subscriptionsApi } from '../services/api';
+import { observationsApi, subscriptionsApi, alertsApi } from '../services/api';
 import { TopNav } from '../components/dashboard/TopNav';
 
 interface LiveStat {
@@ -32,8 +32,7 @@ function tempColor(t: number): string {
   return '#60a5fa';
 }
 
-function useLiveStats() {
-  const [stats, setStats] = useState<LiveStat[]>([]);
+function useLiveStats() {  const [stats, setStats] = useState<LiveStat[]>([]);
   useEffect(() => {
     observationsApi
       .getCurrent()
@@ -185,9 +184,26 @@ const SEVERITY_COLORS: Record<string, string> = {
   CRITICAL: '#9C27B0',
 };
 
+const SEV_LABEL: Record<string, string> = { CRITICAL: 'Kritično', HIGH: 'Visoko', MEDIUM: 'Srednje', LOW: 'Nisko' };
+
+function useLiveAlerts() {
+  const [data, setData] = useState<{ count: number; bySeverity: Record<string, number> } | null>(null);
+  useEffect(() => {
+    alertsApi.getActive()
+      .then((res) => {
+        const by: Record<string, number> = {};
+        for (const a of res.data) by[a.severity] = (by[a.severity] ?? 0) + 1;
+        setData({ count: res.count, bySeverity: by });
+      })
+      .catch(() => setData({ count: 0, bySeverity: {} }));
+  }, []);
+  return data;
+}
+
 export function LandingPage() {
   const navigate = useNavigate();
   const liveStats = useLiveStats();
+  const liveAlerts = useLiveAlerts();
 
   return (
     <div
@@ -228,6 +244,40 @@ export function LandingPage() {
           </a>
         </div>
       </section>
+
+      {/* ── Live alert status banner ── */}
+      {liveAlerts !== null && (
+        <section className="border-b border-slate-100 bg-white px-6 py-4">
+          <div className="mx-auto max-w-4xl flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className={'h-2 w-2 rounded-full ' + (liveAlerts.count > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500')} />
+              <span className="text-sm font-semibold text-slate-700">
+                {liveAlerts.count > 0
+                  ? `${liveAlerts.count} aktivno upozorenje${liveAlerts.count > 1 ? 'a' : ''}`
+                  : 'Nema aktivnih upozorenja'}
+              </span>
+            </div>
+            {liveAlerts.count > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => {
+                  const n = liveAlerts.bySeverity[sev];
+                  if (!n) return null;
+                  return (
+                    <span key={sev} className="rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white"
+                      style={{ backgroundColor: SEVERITY_COLORS[sev] }}>
+                      {n}× {SEV_LABEL[sev]}
+                    </span>
+                  );
+                })}
+                <button onClick={() => navigate('/dashboard')}
+                  className="text-xs font-semibold text-slate-500 underline underline-offset-2 hover:text-slate-800">
+                  Pogledaj &rarr;
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ── Live temps ── */}
       {liveStats.length > 0 && (
