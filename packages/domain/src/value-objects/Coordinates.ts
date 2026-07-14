@@ -54,7 +54,7 @@ export class Coordinates extends ValueObject<CoordinatesProps> {
     return (deg * Math.PI) / 180;
   }
 
-  toString(): string {
+  override toString(): string {
     return `${this.props.latitude.toFixed(4)}, ${this.props.longitude.toFixed(4)}`;
   }
 }

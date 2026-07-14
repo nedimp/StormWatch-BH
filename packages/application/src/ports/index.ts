@@ -45,9 +45,9 @@ export interface RawWeatherForecast extends RawWeatherData {
  * Implementations: Email, SMS, Push, Webhook
  */
 export interface INotificationService {
-  sendAlertCreated(alert: AlertDto, subscriberIds: string[]): Promise<void>;
-  sendAlertEscalated(alert: AlertDto, subscriberIds: string[]): Promise<void>;
-  sendAlertResolved(alertId: string, regionId: string, subscriberIds: string[]): Promise<void>;
+  sendAlertCreated(alert: AlertDto): Promise<void>;
+  sendAlertEscalated(alert: AlertDto): Promise<void>;
+  sendAlertResolved(alertId: string, regionId: string): Promise<void>;
   sendWelcomeEmail(email: string): Promise<void>;
 }
 

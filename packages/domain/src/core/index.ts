@@ -40,7 +40,7 @@ export abstract class AggregateRoot<TId> extends Entity<TId> {
  *
  * Structural equality — two value objects with the same properties are equal.
  */
-export abstract class ValueObject<T extends Record<string, unknown>> {
+export abstract class ValueObject<T extends object> {
   protected constructor(protected readonly props: T) {
     Object.freeze(props);
   }
