@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { observationsApi } from '../../services/api';
 import { useAlertStore } from '../../store/alertStore';
 import type { CurrentConditionDto } from '../../types';
-import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 
 function wmoToDisplay(code: number): { Icon: React.ElementType; label: string; color: string } {
   if (code === 0)  return { Icon: Sun,           label: 'Vedro',             color: '#eab308' };
@@ -132,7 +132,7 @@ export function CurrentConditionsPanel() {
   }
 
   const updatedLabel = dataUpdatedAt
-    ? formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })
+    ? format(new Date(dataUpdatedAt), 'HH:mm')
     : '';
 
   return (
@@ -140,7 +140,7 @@ export function CurrentConditionsPanel() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/60 shrink-0">
         <div className="flex items-center gap-1.5 text-slate-600">
           <Clock size={10} />
-          <span className="text-[10px]">ažurirano {updatedLabel}</span>
+          <span className="text-[10px]">ažurirano u {updatedLabel}</span>
         </div>
         <span className="text-[10px] text-slate-700">{observations.length} stanica · Open-Meteo</span>
       </div>
