@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { CloudLightning, Thermometer, Home, ArrowRight } from 'lucide-react';
+import { CloudLightning, Thermometer, Home, ArrowRight, Bell, Activity } from 'lucide-react';
 import { TopNav } from '../components/dashboard/TopNav';
 import { SubscribeSection } from '../components/landing/SubscribeSection';
 import { useLiveStats } from '../hooks/useLiveStats';
