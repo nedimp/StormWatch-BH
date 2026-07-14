@@ -13,7 +13,6 @@ export function TopNav({ page }: TopNavProps) {
   return (
     <div className="fixed top-4 inset-x-0 z-50 px-4 hidden sm:flex justify-center pointer-events-none">
       <nav className="pointer-events-auto flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white/95 px-4 py-2.5 shadow-lg shadow-slate-200/60 backdrop-blur-xl w-full max-w-2xl">
-
         {/* Left */}
         <div className="flex items-center gap-2.5">
           {!isLanding && (
@@ -28,10 +27,7 @@ export function TopNav({ page }: TopNavProps) {
               <div className="h-4 w-px bg-slate-200" />
             </>
           )}
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 group"
-          >
+          <button onClick={() => navigate('/')} className="flex items-center gap-2 group">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 shadow-sm transition group-hover:bg-slate-700">
               <CloudLightning size={13} className="text-white" strokeWidth={2} />
             </div>

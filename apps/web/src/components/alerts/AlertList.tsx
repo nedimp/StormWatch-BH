@@ -32,7 +32,10 @@ export function AlertList() {
     return (
       <div className="space-y-3 p-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-28 animate-pulse rounded-xl bg-slate-100 border border-slate-200" />
+          <div
+            key={i}
+            className="h-28 animate-pulse rounded-xl bg-slate-100 border border-slate-200"
+          />
         ))}
       </div>
     );
@@ -58,16 +61,20 @@ export function AlertList() {
   });
 
   const filtered = query.trim()
-    ? sorted.filter((a) =>
-        a.regionName.toLowerCase().includes(query.toLowerCase()) ||
-        a.title.toLowerCase().includes(query.toLowerCase())
+    ? sorted.filter(
+        (a) =>
+          a.regionName.toLowerCase().includes(query.toLowerCase()) ||
+          a.title.toLowerCase().includes(query.toLowerCase()),
       )
     : sorted;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <Search
+          size={13}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+        />
         <input
           type="text"
           value={query}
@@ -77,7 +84,9 @@ export function AlertList() {
         />
       </div>
       {filtered.length === 0 && query ? (
-        <p className="text-center text-xs text-slate-400 py-8">Nema rezultata za &ldquo;{query}&rdquo;</p>
+        <p className="text-center text-xs text-slate-400 py-8">
+          Nema rezultata za &ldquo;{query}&rdquo;
+        </p>
       ) : (
         filtered.map((alert) => (
           <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />

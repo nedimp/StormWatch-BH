@@ -22,13 +22,11 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
-
       {/* ── Desktop nav ── */}
       <TopNav page="dashboard" />
 
       {/* ── DESKTOP layout (md+): stations list + alerts sidebar ── */}
       <main className="hidden md:flex flex-1 overflow-hidden pt-16">
-
         {/* Stations — main content */}
         <div className="flex-1 overflow-hidden border-r border-slate-200">
           <CurrentConditionsPanel />
@@ -54,31 +52,59 @@ export function DashboardPage() {
       {/* ── MOBILE layout (<md) ── */}
       <div className="flex md:hidden flex-col flex-1 overflow-hidden">
         {mobileView === 'map' ? (
-          <Suspense fallback={<div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Učitavanje...</div>}>
-            <div className="flex-1 overflow-hidden"><WeatherMap /></div>
+          <Suspense
+            fallback={
+              <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">
+                Učitavanje...
+              </div>
+            }
+          >
+            <div className="flex-1 overflow-hidden">
+              <WeatherMap />
+            </div>
           </Suspense>
         ) : mobileView === 'alerts' ? (
-          <div className="flex-1 overflow-y-auto p-3"><AlertList /></div>
+          <div className="flex-1 overflow-y-auto p-3">
+            <AlertList />
+          </div>
         ) : (
-          <div className="flex-1 overflow-hidden"><CurrentConditionsPanel /></div>
+          <div className="flex-1 overflow-hidden">
+            <CurrentConditionsPanel />
+          </div>
         )}
 
         {/* Mobile bottom nav */}
-        <nav className="shrink-0 flex border-t border-slate-200 bg-white" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          <button onClick={() => navigate('/')}
-            className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-400">
+        <nav
+          className="shrink-0 flex border-t border-slate-200 bg-white"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+          <button
+            onClick={() => navigate('/')}
+            className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-400"
+          >
             <Home size={20} strokeWidth={1.5} />
             Početna
           </button>
-          <button onClick={() => setMobileView('map')}
-            className={'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'map' ? 'text-black' : 'text-slate-400')}>
+          <button
+            onClick={() => setMobileView('map')}
+            className={
+              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
+              (mobileView === 'map' ? 'text-black' : 'text-slate-400')
+            }
+          >
             <MapIcon size={20} strokeWidth={1.5} />
             Karta
           </button>
-          <button onClick={() => { setMobileView('alerts'); setActiveTab('alerts'); }}
-            className={'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold relative ' +
-              (mobileView === 'alerts' ? 'text-black' : 'text-slate-400')}>
+          <button
+            onClick={() => {
+              setMobileView('alerts');
+              setActiveTab('alerts');
+            }}
+            className={
+              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold relative ' +
+              (mobileView === 'alerts' ? 'text-black' : 'text-slate-400')
+            }
+          >
             <div className="relative">
               <BellRing size={20} strokeWidth={1.5} />
               {alerts.length > 0 && (
@@ -89,15 +115,21 @@ export function DashboardPage() {
             </div>
             Upozorenja
           </button>
-          <button onClick={() => { setMobileView('conditions'); setActiveTab('conditions'); }}
-            className={'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'conditions' ? 'text-black' : 'text-slate-400')}>
+          <button
+            onClick={() => {
+              setMobileView('conditions');
+              setActiveTab('conditions');
+            }}
+            className={
+              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
+              (mobileView === 'conditions' ? 'text-black' : 'text-slate-400')
+            }
+          >
             <Thermometer size={20} strokeWidth={1.5} />
             Uslovi
           </button>
         </nav>
       </div>
-
     </div>
   );
 }
