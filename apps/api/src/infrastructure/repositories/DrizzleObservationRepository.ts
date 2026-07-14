@@ -112,13 +112,12 @@ export class DrizzleObservationRepository implements IWeatherObservationReposito
   }
 
   async findAllLatestPerStation(): Promise<WeatherObservation[]> {
-    // DISTINCT ON is PostgreSQL-specific but efficient — one row per station, latest first
-    const rows = await this.db.execute<typeof observations.$inferSelect>(sql`
-      SELECT DISTINCT ON (station_id) *
-      FROM observations
-      ORDER BY station_id, observed_at DESC
-    `);
-    return (rows.rows as (typeof observations.$inferSelect)[])
-      .map(rowToEntity).filter(Boolean) as WeatherObservation[];
+    // Since we UPSERT with a unique constraint on station_id, the table holds
+    // exactly one row per station — the latest reading.
+    const rows = await this.db
+      .select()
+      .from(observations)
+      .orderBy(desc(observations.observedAt));
+    return rows.map(rowToEntity).filter(Boolean) as WeatherObservation[];
   }
 }
