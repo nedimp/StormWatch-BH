@@ -63,3 +63,10 @@ export interface IEventBus {
 export interface IIdGenerator {
   generate(): string;
 }
+
+/**
+ * Outbound port — resolve a region ID to its human-readable local name.
+ */
+export interface IRegionNameResolver {
+  resolve(regionId: string): string | undefined;
+}

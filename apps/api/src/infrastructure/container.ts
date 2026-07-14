@@ -11,15 +11,18 @@ import {
 } from '@stormwatch/application';
 import type { IIdGenerator, IEventBus } from '@stormwatch/application';
 import { InMemoryAlertRepository } from './repositories/InMemoryAlertRepository.js';
-import { InMemoryObservationRepository } from './repositories/InMemoryObservationRepository.js';
+import { DrizzleObservationRepository } from './repositories/DrizzleObservationRepository.js';
 import { InProcessEventBus } from './events/InProcessEventBus.js';
 import { GmailNotificationService } from './notifications/GmailNotificationService.js';
 import { DrizzleSubscriptionRepository } from './repositories/DrizzleSubscriptionRepository.js';
+import { BIH_REGIONS } from './data/bihRegions.js';
 import { db } from './database/db.js';
+
+const regionNameMap = new Map(BIH_REGIONS.map((r) => [r.id, r.localName]));
 
 export interface AppContainer {
   alertRepository: IWeatherAlertRepository;
-  observationRepository: InMemoryObservationRepository;
+  observationRepository: IWeatherObservationRepository;
   subscriptionRepository: DrizzleSubscriptionRepository;
   notificationService: GmailNotificationService;
   eventBus: InProcessEventBus;
@@ -30,7 +33,7 @@ export interface AppContainer {
 
 export function buildContainer(): AppContainer {
   const alertRepository = new InMemoryAlertRepository();
-  const observationRepository = new InMemoryObservationRepository();
+  const observationRepository = new DrizzleObservationRepository(db);
   const subscriptionRepository = new DrizzleSubscriptionRepository(db);
   const eventBus = new InProcessEventBus();
   const notificationService = new GmailNotificationService(subscriptionRepository);
@@ -46,6 +49,7 @@ export function buildContainer(): AppContainer {
     idGenerator,
     notificationService,
     eventBus,
+    regionNameResolver: { resolve: (id) => regionNameMap.get(id) },
   });
 
   const resolveAlertUseCase = new ResolveAlertUseCase(alertRepository, eventBus);

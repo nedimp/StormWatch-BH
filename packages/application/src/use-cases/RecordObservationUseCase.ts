@@ -12,7 +12,7 @@ import {
 } from '@stormwatch/domain';
 import type { RecordObservationCommand, AlertDto } from '../dtos/index.js';
 import { toAlertDto } from '../dtos/index.js';
-import type { IIdGenerator, INotificationService, IEventBus } from '../ports/index.js';
+import type { IIdGenerator, INotificationService, IEventBus, IRegionNameResolver } from '../ports/index.js';
 
 interface Deps {
   alertRepository: IWeatherAlertRepository;
@@ -21,6 +21,7 @@ interface Deps {
   idGenerator: IIdGenerator;
   notificationService: INotificationService;
   eventBus: IEventBus;
+  regionNameResolver?: IRegionNameResolver;
 }
 
 /**
@@ -39,8 +40,7 @@ export class RecordObservationUseCase {
     const coordinatesResult = Coordinates.create(cmd.latitude, cmd.longitude);
     if (!coordinatesResult.ok) throw new Error(coordinatesResult.error);
 
-    const metricsResult = WeatherMetrics.create({
-      temperatureCelsius: cmd.temperatureCelsius,
+    const metricsResult = WeatherMetrics.create({      temperatureCelsius: cmd.temperatureCelsius,
       windSpeedKmh: cmd.windSpeedKmh,
       windGustKmh: cmd.windGustKmh,
       precipitationMmPerHour: cmd.precipitationMmPerHour,
@@ -49,12 +49,6 @@ export class RecordObservationUseCase {
       pressureHpa: cmd.pressureHpa,
     });
     if (!metricsResult.ok) throw new Error(metricsResult.error);
-
-    const conditionResult = WeatherCondition.create(
-      WeatherConditionType.HEAVY_RAIN, // default; overridden by assessment
-      'Observation',
-    );
-    if (!conditionResult.ok) throw new Error(conditionResult.error);
 
     const observationResult = WeatherObservation.create(this.deps.idGenerator.generate(), {
       stationId: cmd.stationId,
@@ -126,7 +120,7 @@ export class RecordObservationUseCase {
 
     const alertResult = WeatherAlert.create(this.deps.idGenerator.generate(), {
       regionId: cmd.regionId,
-      regionName: cmd.regionId, // resolved by region lookup in a full implementation
+      regionName: this.deps.regionNameResolver?.resolve(cmd.regionId) ?? cmd.regionId,
       affectedArea: [coordinatesResult.value, coordinatesResult.value, coordinatesResult.value],
       severity: assessment.severity,
       condition: assessment.condition,

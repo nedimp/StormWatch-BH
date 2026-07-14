@@ -55,6 +55,7 @@ export async function migrate(): Promise<void> {
       observed_at              TIMESTAMPTZ NOT NULL
     );
 
+    CREATE UNIQUE INDEX IF NOT EXISTS observations_station_unique ON observations (station_id);
     CREATE INDEX IF NOT EXISTS observations_station_idx ON observations (station_id);
     CREATE INDEX IF NOT EXISTS observations_region_idx  ON observations (region_id);
     CREATE INDEX IF NOT EXISTS observations_observed_idx ON observations (observed_at DESC);

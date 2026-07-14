@@ -50,6 +50,7 @@ export interface CurrentConditionDto {
   humidityPercent: number;
   visibilityKm: number;
   pressureHpa: number;
+  weatherCode: number;
   observedAt: string;
   source: string;
 }

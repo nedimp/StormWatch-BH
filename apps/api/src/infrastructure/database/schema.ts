@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, varchar, index, real, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, varchar, index, real, integer, unique } from 'drizzle-orm/pg-core';
 
 // ── Subscribers ──────────────────────────────────────────────────────────────
 export const subscribers = pgTable('subscribers', {
@@ -27,9 +27,10 @@ export const observations = pgTable('observations', {
   source:                  text('source').notNull().default('API_PROVIDER'),
   observedAt:              timestamp('observed_at', { withTimezone: true }).notNull(),
 }, (t) => ({
-  stationIdx:  index('observations_station_idx').on(t.stationId),
-  regionIdx:   index('observations_region_idx').on(t.regionId),
-  observedIdx: index('observations_observed_idx').on(t.observedAt),
+  stationIdx:        index('observations_station_idx').on(t.stationId),
+  regionIdx:         index('observations_region_idx').on(t.regionId),
+  observedIdx:       index('observations_observed_idx').on(t.observedAt),
+  stationUniqueIdx:  unique('observations_station_unique').on(t.stationId),
 }));
 export const alerts = pgTable('alerts', {
   id:           text('id').primaryKey(),
