@@ -118,7 +118,7 @@ export function DashboardPage() {
         )}
 
         {/* Mobile bottom nav */}
-        <nav className="shrink-0 flex border-t border-slate-800 bg-slate-900">
+        <nav className="shrink-0 flex border-t border-slate-800 bg-slate-900" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           {/* Home → landing page */}
           <button
             onClick={() => navigate('/')}

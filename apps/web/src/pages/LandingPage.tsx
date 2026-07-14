@@ -133,7 +133,7 @@ export function LandingPage() {
   const liveStats = useLiveStats();
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-slate-200 overflow-x-hidden pb-16 sm:pb-0">
+    <div className="min-h-screen bg-[#0f1117] text-slate-200 overflow-x-hidden pb-16 sm:pb-0" style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
 
       {/* ── Shared floating nav (desktop only) ── */}
       <TopNav page="landing" />
@@ -270,7 +270,7 @@ export function LandingPage() {
       </footer>
 
       {/* ── Mobile bottom nav (landing page) ── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 flex sm:hidden border-t border-slate-800 bg-slate-900/95 backdrop-blur-md">
+      <nav className="fixed bottom-0 inset-x-0 z-50 flex sm:hidden border-t border-slate-800 bg-slate-900/95 backdrop-blur-md" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-indigo-400"
