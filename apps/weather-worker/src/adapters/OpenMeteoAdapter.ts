@@ -106,7 +106,7 @@ export class OpenMeteoAdapter {
       humidityPercent: c.relative_humidity_2m,
       visibilityKm: c.visibility / 1000,
       pressureHpa: c.surface_pressure,
-      fetchedAt: new Date(c.time),
+      fetchedAt: new Date(),
       weatherCode: c.weather_code,
     };
   }
@@ -164,7 +164,7 @@ export class OpenMeteoAdapter {
         humidityPercent: c.relative_humidity_2m,
         visibilityKm: c.visibility / 1000,
         pressureHpa: c.surface_pressure,
-        fetchedAt: new Date(c.time),
+        fetchedAt: new Date(),
         weatherCode: c.weather_code,
       });
     }
