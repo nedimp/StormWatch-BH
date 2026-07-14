@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useId } from 'react';
 import {
-  Activity, Thermometer, Map as MapIcon,
+  CloudLightning, Activity, Thermometer, Map as MapIcon,
   Bell, Home, ArrowRight, Shield, Zap, Clock, CheckCircle2, Loader2, Mail,
 } from 'lucide-react';
 import { observationsApi, subscriptionsApi } from '../services/api';
