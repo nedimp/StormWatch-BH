@@ -1,13 +1,12 @@
 import type { AlertDto } from '../../types';
 import { formatDistanceToNow } from 'date-fns';
-import clsx from 'clsx';
 
 interface AlertCardProps {
   alert: AlertDto;
   onResolve?: (id: string) => void;
 }
 
-const conditionEmoji: Record<string, string> = {
+const CONDITION_EMOJI: Record<string, string> = {
   THUNDERSTORM: '⛈️',
   HEAVY_RAIN: '🌧️',
   HAIL: '🌨️',
@@ -19,55 +18,69 @@ const conditionEmoji: Record<string, string> = {
   TORNADO_RISK: '🌪️',
 };
 
+const SEV_LABEL: Record<string, string> = {
+  CRITICAL: 'KRITIČNO',
+  HIGH: 'VISOKO',
+  MEDIUM: 'SREDNJE',
+  LOW: 'NISKO',
+};
+
 export function AlertCard({ alert, onResolve }: AlertCardProps) {
   const timeAgo = formatDistanceToNow(new Date(alert.issuedAt), { addSuffix: true });
+  const isCritical = alert.severity === 'CRITICAL';
   const isEscalated = alert.status === 'ESCALATED';
 
   return (
     <div
-      className={clsx(
-        'rounded-xl border-l-4 bg-white shadow-md p-4 transition-all',
-        isEscalated && 'animate-pulse',
-      )}
-      style={{ borderLeftColor: alert.severityColor }}
+      className={"relative overflow-hidden rounded-xl border p-4 transition-all " + (isCritical ? "alert-critical-pulse" : "")}
+      style={{
+        borderColor: alert.severityColor + "40",
+        background: "linear-gradient(135deg, #1a1f2e 0%, " + alert.severityColor + "08 100%)",
+      }}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl" role="img" aria-label={alert.condition}>
-            {conditionEmoji[alert.condition] ?? '⚠️'}
-          </span>
-          <div>
-            <h3 className="font-bold text-gray-900 text-sm">{alert.title}</h3>
-            <p className="text-xs text-gray-500">{alert.regionName}</p>
+      <div
+        className="absolute left-0 top-0 h-full w-1 rounded-l-xl"
+        style={{ backgroundColor: alert.severityColor }}
+      />
+      <div className="flex items-start justify-between gap-2 pl-2">
+        <div className="flex items-start gap-2.5">
+          <span className="mt-0.5 text-xl leading-none">{CONDITION_EMOJI[alert.condition] ?? '⚠️'}</span>
+          <div className="min-w-0">
+            <p className="text-xs font-bold leading-snug text-text-primary">{alert.title}</p>
+            <p className="text-[11px] text-text-muted mt-0.5">{alert.regionName}</p>
           </div>
         </div>
-        <span
-          className="rounded-full px-2 py-0.5 text-xs font-semibold text-white"
-          style={{ backgroundColor: alert.severityColor }}
-        >
-          {alert.severity}
-        </span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span
+            className="rounded-md px-2 py-0.5 text-[10px] font-black tracking-wide text-white"
+            style={{ backgroundColor: alert.severityColor }}
+          >
+            {SEV_LABEL[alert.severity] ?? alert.severity}
+          </span>
+          {isEscalated && (
+            <span className="rounded-md bg-orange-500/20 px-2 py-0.5 text-[10px] font-semibold text-orange-400 border border-orange-500/30">
+              ESKALIRANO
+            </span>
+          )}
+        </div>
       </div>
-
-      <p className="mt-2 text-sm text-gray-700">{alert.description}</p>
-
+      <p className="mt-2.5 pl-2 text-xs text-text-secondary leading-relaxed">{alert.description}</p>
       {alert.recommendations.length > 0 && (
-        <ul className="mt-2 space-y-1">
+        <ul className="mt-2 pl-2 space-y-1">
           {alert.recommendations.map((rec, i) => (
-            <li key={i} className="flex items-start gap-1 text-xs text-gray-600">
-              <span className="mt-0.5 text-amber-500">›</span>
+            <li key={i} className="flex items-start gap-1.5 text-[11px] text-text-muted">
+              <span className="mt-0.5 shrink-0" style={{ color: alert.severityColor }}>›</span>
               {rec}
             </li>
           ))}
         </ul>
       )}
-
-      <div className="mt-3 flex items-center justify-between">
-        <span className="text-xs text-gray-400">{timeAgo}</span>
+      <div className="mt-3 flex items-center justify-between pl-2">
+        <span className="text-[11px] text-text-muted">{timeAgo}</span>
         {onResolve && (
           <button
             onClick={() => onResolve(alert.id)}
-            className="rounded-md bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-200 transition-colors"
+            className="rounded-lg border border-surface-border bg-surface-raised px-2.5 py-1 text-[11px] font-medium text-text-secondary transition hover:border-red-500/40 hover:text-red-400"
           >
             Označi riješenim
           </button>

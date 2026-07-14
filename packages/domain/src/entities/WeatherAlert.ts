@@ -2,9 +2,7 @@ import { AggregateRoot, Result, ok, err } from '../core/index.js';
 import { Coordinates } from '../value-objects/Coordinates.js';
 import { AlertSeverity, AlertSeverityLevel } from '../value-objects/AlertSeverity.js';
 import { WeatherCondition } from '../value-objects/WeatherCondition.js';
-import { AlertCreatedEvent } from '../events/AlertCreatedEvent.js';
-import { AlertEscalatedEvent } from '../events/AlertEscalatedEvent.js';
-import { AlertResolvedEvent } from '../events/AlertResolvedEvent.js';
+import { AlertCreatedEvent, AlertEscalatedEvent, AlertResolvedEvent } from '../events/index.js';
 
 export type AlertStatus = 'ACTIVE' | 'ESCALATED' | 'RESOLVED' | 'EXPIRED';
 

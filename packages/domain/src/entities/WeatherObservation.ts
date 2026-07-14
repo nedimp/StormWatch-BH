@@ -2,7 +2,7 @@ import { AggregateRoot, Result, ok, err } from '../core/index.js';
 import { Coordinates } from '../value-objects/Coordinates.js';
 import { WeatherMetrics } from '../value-objects/WeatherMetrics.js';
 import { WeatherCondition } from '../value-objects/WeatherCondition.js';
-import { ObservationRecordedEvent } from '../events/ObservationRecordedEvent.js';
+import { ObservationRecordedEvent } from '../events/index.js';
 
 export interface WeatherObservationProps {
   stationId: string;
