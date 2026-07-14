@@ -85,7 +85,8 @@ export class DrizzleObservationRepository implements IWeatherObservationReposito
 
   async findByStation(stationId: string, limit = 100): Promise<WeatherObservation[]> {
     const rows = await this.db
-      .select().from(observations)
+      .select()
+      .from(observations)
       .where(eq(observations.stationId, stationId))
       .orderBy(desc(observations.observedAt))
       .limit(limit);
@@ -94,17 +95,20 @@ export class DrizzleObservationRepository implements IWeatherObservationReposito
 
   async findByRegion(regionId: string, since: Date): Promise<WeatherObservation[]> {
     const rows = await this.db
-      .select().from(observations)
+      .select()
+      .from(observations)
       .where(eq(observations.regionId, regionId))
       .orderBy(desc(observations.observedAt));
     return rows
       .filter((r) => r.observedAt >= since)
-      .map(rowToEntity).filter(Boolean) as WeatherObservation[];
+      .map(rowToEntity)
+      .filter(Boolean) as WeatherObservation[];
   }
 
   async findLatestByStation(stationId: string): Promise<WeatherObservation | null> {
     const [row] = await this.db
-      .select().from(observations)
+      .select()
+      .from(observations)
       .where(eq(observations.stationId, stationId))
       .orderBy(desc(observations.observedAt))
       .limit(1);
@@ -114,10 +118,7 @@ export class DrizzleObservationRepository implements IWeatherObservationReposito
   async findAllLatestPerStation(): Promise<WeatherObservation[]> {
     // Since we UPSERT with a unique constraint on station_id, the table holds
     // exactly one row per station — the latest reading.
-    const rows = await this.db
-      .select()
-      .from(observations)
-      .orderBy(desc(observations.observedAt));
+    const rows = await this.db.select().from(observations).orderBy(desc(observations.observedAt));
     return rows.map(rowToEntity).filter(Boolean) as WeatherObservation[];
   }
 }

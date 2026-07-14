@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { CurrentConditionDto } from '../types';
+import { GEOLOCATION_TIMEOUT_MS } from '../constants/api';
 
 /** Reverse-geocode lat/lng → city name using the free Nominatim API. */
 async function reverseGeocode(lat: number, lng: number): Promise<string | null> {
@@ -52,7 +53,7 @@ export function useUserLocation(stations: CurrentConditionDto[]): UserLocationRe
         setCityName(city);
       },
       () => { /* permission denied — silent */ },
-      { timeout: 5000 },
+      { timeout: GEOLOCATION_TIMEOUT_MS },
     );
   }, [stations.length]); // eslint-disable-line react-hooks/exhaustive-deps
 

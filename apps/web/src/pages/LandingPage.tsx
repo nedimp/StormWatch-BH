@@ -1,70 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import {
-  CloudLightning,
-  Activity,
-  Thermometer,
-  Map as MapIcon,
-  Bell,
-  Home,
-  ArrowRight,
-  Shield,
-  Zap,
-  Clock,
-} from 'lucide-react';
+import { CloudLightning, Thermometer, Home, ArrowRight } from 'lucide-react';
 import { TopNav } from '../components/dashboard/TopNav';
 import { SubscribeSection } from '../components/landing/SubscribeSection';
 import { useLiveStats } from '../hooks/useLiveStats';
 import { useLiveAlerts } from '../hooks/useLiveAlerts';
 import { tempColor } from '../utils/weather';
+import { FEATURES, SEVERITY_LEGEND } from '../constants/landingContent';
+import { SEVERITY_COLORS, SEVERITY_LABELS, SEVERITY_ORDER } from '../constants/severity';
 import type { AlertSeverity } from '../types';
-
-const FEATURES = [
-  {
-    Icon: Zap,
-    color: '#818cf8',
-    title: 'Automatska detekcija',
-    desc: 'Prag vrijednosti za grmljavinu, jak vjetar, obilne padavine i ekstremnu vrućinu primjenjen na svaku stanicu.',
-  },
-  {
-    Icon: MapIcon,
-    color: '#34d399',
-    title: '14 stanica u BiH',
-    desc: 'Kontinuirano praćenje u Sarajevu, Banja Luci, Tuzli, Mostaru, Zenici, Brčkom i 8 ostalih tačaka.',
-  },
-  {
-    Icon: Bell,
-    color: '#f97316',
-    title: 'Email upozorenja',
-    desc: 'Pretplatite se i odmah primite email čim se izda upozorenje — bez potrebe da pratite stranicu.',
-  },
-  {
-    Icon: Clock,
-    color: '#60a5fa',
-    title: 'Ažuriranje svakih 15 min',
-    desc: 'Open-Meteo API pruža meteorološke podatke visoke rezolucije bez naknade, bez ograničenja.',
-  },
-  {
-    Icon: Shield,
-    color: '#a78bfa',
-    title: 'WebSocket notifikacije',
-    desc: 'Real-time push uzbune u pretraživač čim se stanje promijeni — bez ručnog osvježavanja.',
-  },
-  {
-    Icon: Activity,
-    color: '#fb7185',
-    title: 'REST + Swagger API',
-    desc: 'Sve uzbune i mjerenja dostupni putem REST API-ja, Swagger dokumentacija uključena.',
-  },
-];
-
-const SEVERITY_COLORS: Record<string, string> = {
-  LOW: '#4CAF50',
-  MEDIUM: '#FF9800',
-  HIGH: '#F44336',
-  CRITICAL: '#9C27B0',
-};
-
-const SEV_LABEL: Record<string, string> = { CRITICAL: 'Kritično', HIGH: 'Visoko', MEDIUM: 'Srednje', LOW: 'Nisko' };
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -116,7 +59,12 @@ export function LandingPage() {
         <section className="border-b border-slate-100 bg-white px-6 py-4">
           <div className="mx-auto max-w-4xl flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className={'h-2 w-2 rounded-full ' + (liveAlerts.count > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500')} />
+              <span
+                className={
+                  'h-2 w-2 rounded-full ' +
+                  (liveAlerts.count > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500')
+                }
+              />
               <span className="text-sm font-semibold text-slate-700">
                 {liveAlerts.count > 0
                   ? `${liveAlerts.count} aktivno upozorenje${liveAlerts.count > 1 ? 'a' : ''}`
@@ -129,14 +77,19 @@ export function LandingPage() {
                   const n = liveAlerts.bySeverity[sev];
                   if (!n) return null;
                   return (
-                    <span key={sev} className="rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white"
-                      style={{ backgroundColor: SEVERITY_COLORS[sev] }}>
-                      {n}× {SEV_LABEL[sev]}
+                    <span
+                      key={sev}
+                      className="rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white"
+                      style={{ backgroundColor: SEVERITY_COLORS[sev] }}
+                    >
+                      {n}× {SEVERITY_LABELS[sev as AlertSeverity]}
                     </span>
                   );
                 })}
-                <button onClick={() => navigate('/dashboard')}
-                  className="text-xs font-semibold text-slate-500 underline underline-offset-2 hover:text-slate-800">
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="text-xs font-semibold text-slate-500 underline underline-offset-2 hover:text-slate-800"
+                >
                   Pogledaj &rarr;
                 </button>
               </div>
@@ -208,12 +161,7 @@ export function LandingPage() {
             Svako upozorenje je klasifikovano prema intenzitetu
           </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              { level: 'NISKO', key: 'LOW', desc: 'Praćenje, bez neposredne opasnosti' },
-              { level: 'SREDNJE', key: 'MEDIUM', desc: 'Opreznost, moguće smetnje' },
-              { level: 'VISOKO', key: 'HIGH', desc: 'Reagujte, opasnost po imovinu' },
-              { level: 'KRITIČNO', key: 'CRITICAL', desc: 'Hitno djelovanje, opasnost po život' },
-            ].map(({ level, key, desc }) => (
+            {SEVERITY_LEGEND.map(({ level, key, desc }) => (
               <div
                 key={key}
                 className="flex flex-col items-center gap-2 rounded-xl border bg-white p-4 shadow-sm"

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { observationsApi } from '../services/api';
+import { LIVE_STATS_MAX_CITIES } from '../constants/api';
 
 export interface LiveStat {
   stationId: string;
@@ -24,7 +25,7 @@ export function useLiveStats(): LiveStat[] {
             byCity.set(city, { stationId: s.stationId, city, temp });
           }
         }
-        setStats([...byCity.values()].slice(0, 6));
+        setStats([...byCity.values()].slice(0, LIVE_STATS_MAX_CITIES));
       })
       .catch(() => {});
   }, []);

@@ -6,6 +6,7 @@ import { observationsApi } from '../../services/api';
 import { useAlertStore } from '../../store/alertStore';
 import { useUserLocation } from '../../hooks/useUserLocation';
 import { StationRow } from './StationRow';
+import { CONDITIONS_REFETCH_MS, CONDITIONS_STALE_MS } from '../../constants/api';
 
 export function CurrentConditionsPanel() {
   const alerts = useAlertStore((s) => s.alerts);
@@ -15,8 +16,8 @@ export function CurrentConditionsPanel() {
   const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['conditions'],
     queryFn: () => observationsApi.getCurrent(),
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    refetchInterval: CONDITIONS_REFETCH_MS,
+    staleTime: CONDITIONS_STALE_MS,
   });
 
   const observations = data?.data ?? [];
@@ -26,7 +27,10 @@ export function CurrentConditionsPanel() {
     return (
       <div className="space-y-2 p-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-20 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+          <div
+            key={i}
+            className="h-20 animate-pulse rounded-lg border border-slate-200 bg-slate-50"
+          />
         ))}
       </div>
     );
@@ -66,7 +70,10 @@ export function CurrentConditionsPanel() {
       {/* Search */}
       <div className="px-3 py-2 border-b border-slate-100 shrink-0">
         <div className="relative">
-          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <Search
+            size={12}
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+          />
           <input
             type="text"
             value={query}
@@ -80,7 +87,9 @@ export function CurrentConditionsPanel() {
       {/* Station rows */}
       <div className="flex-1 overflow-y-auto divide-y divide-slate-100 px-3 py-1 space-y-1.5">
         {observations
-          .filter((obs) => !query.trim() || obs.stationName.toLowerCase().includes(query.toLowerCase()))
+          .filter(
+            (obs) => !query.trim() || obs.stationName.toLowerCase().includes(query.toLowerCase()),
+          )
           .map((obs) => {
             const alert = alertsByRegion.get(obs.regionId);
             return (

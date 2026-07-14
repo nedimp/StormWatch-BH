@@ -46,7 +46,9 @@ export async function alertRoutes(app: FastifyInstance): Promise<void> {
     async (request, reply) => {
       const parsed = querySchema.safeParse(request.query);
       if (!parsed.success) {
-        return reply.code(400).send({ error: 'Invalid query parameters', details: parsed.error.flatten() });
+        return reply
+          .code(400)
+          .send({ error: 'Invalid query parameters', details: parsed.error.flatten() });
       }
 
       const query: GetActiveAlertsQuery = parsed.data;

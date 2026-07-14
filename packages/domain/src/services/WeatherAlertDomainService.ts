@@ -117,11 +117,7 @@ export class WeatherAlertDomainService {
         AlertSeverityLevel.MEDIUM,
         WeatherConditionType.FOG,
         `Gusta magla — vidljivost ispod ${(metrics.visibility * 1000).toFixed(0)} m`,
-        [
-          'Smanjite brzinu vožnje',
-          'Koristite maglenke',
-          'Povećajte razmak između vozila',
-        ],
+        ['Smanjite brzinu vožnje', 'Koristite maglenke', 'Povećajte razmak između vozila'],
       );
     }
 

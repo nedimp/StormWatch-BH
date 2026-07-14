@@ -50,7 +50,9 @@ export function SubscribeSection() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
-            <label htmlFor={id} className="sr-only">Email adresa</label>
+            <label htmlFor={id} className="sr-only">
+              Email adresa
+            </label>
             <input
               id={id}
               type="email"
@@ -66,16 +68,22 @@ export function SubscribeSection() {
               className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-500 disabled:opacity-60"
             >
               {state === 'loading' ? (
-                <><Loader2 size={15} className="animate-spin" /> Slanje...</>
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Slanje...
+                </>
               ) : (
-                <><Mail size={15} /> Pretplatite se</>
+                <>
+                  <Mail size={15} /> Pretplatite se
+                </>
               )}
             </button>
           </form>
         )}
 
         {state === 'error' && <p className="mt-3 text-xs text-red-500">{message}</p>}
-        <p className="mt-4 text-xs text-slate-400">Bez spama. Otkažite u svakom trenutku jednim klikom.</p>
+        <p className="mt-4 text-xs text-slate-400">
+          Bez spama. Otkažite u svakom trenutku jednim klikom.
+        </p>
       </div>
     </section>
   );

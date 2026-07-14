@@ -2,15 +2,10 @@ import { MapContainer, TileLayer, CircleMarker, Popup, ZoomControl } from 'react
 import { useAlertStore } from '../../store/alertStore';
 import { useQuery } from '@tanstack/react-query';
 import { regionsApi } from '../../services/api';
+import { ENTITY_COLORS } from '../../constants/entities';
 import type { RegionDto } from '../../types';
 
 const BIH_CENTER: [number, number] = [44.1, 17.6];
-
-const ENTITY_COLOR: Record<string, string> = {
-  FBiH: '#60a5fa',
-  RS: '#fb923c',
-  BD: '#34d399',
-};
 
 export function WeatherMap() {
   const alerts = useAlertStore((s) => s.alerts);
@@ -42,7 +37,7 @@ export function WeatherMap() {
       {regions.map((region) => {
         const alert = alertsByRegion.get(region.id);
         const hasAlert = !!alert;
-        const color = hasAlert ? alert.severityColor : (ENTITY_COLOR[region.entity] ?? '#60a5fa');
+        const color = hasAlert ? alert.severityColor : (ENTITY_COLORS[region.entity] ?? '#60a5fa');
         const radius = hasAlert ? 22 : 10;
 
         return (
@@ -63,8 +58,8 @@ export function WeatherMap() {
                   <strong style={{ color: '#1e293b' }}>{region.localName}</strong>
                   <span
                     style={{
-                      backgroundColor: (ENTITY_COLOR[region.entity] ?? '#60a5fa') + '30',
-                      color: ENTITY_COLOR[region.entity] ?? '#60a5fa',
+                      backgroundColor: (ENTITY_COLORS[region.entity] ?? '#60a5fa') + '30',
+                      color: ENTITY_COLORS[region.entity] ?? '#60a5fa',
                       padding: '2px 6px',
                       borderRadius: 4,
                       fontSize: 11,

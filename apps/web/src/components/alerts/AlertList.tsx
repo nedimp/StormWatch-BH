@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Search } from 'lucide-react';
+import { SEVERITY_ORDER } from '../../constants/severity';
+import { ALERTS_REFETCH_MS } from '../../constants/api';
 import { useAlertStore } from '../../store/alertStore';
 import { AlertCard } from './AlertCard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +18,7 @@ export function AlertList() {
   const { data, isLoading } = useQuery({
     queryKey: ['alerts'],
     queryFn: () => alertsApi.getActive(),
-    refetchInterval: 30_000,
+    refetchInterval: ALERTS_REFETCH_MS,
   });
 
   useEffect(() => {

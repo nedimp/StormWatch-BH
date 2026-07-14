@@ -1,13 +1,12 @@
 import { Siren, Wifi, WifiOff } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
+import {
+  SEVERITY_COLORS,
+  SEVERITY_BG,
+  SEVERITY_LABELS,
+  SEVERITY_ORDER,
+} from '../../constants/severity';
 import type { AlertSeverity } from '../../types';
-
-const SEV_CONFIG: Record<AlertSeverity, { color: string; label: string; bg: string }> = {
-  CRITICAL: { color: '#9C27B0', label: 'Kritično', bg: 'rgba(156,39,176,0.12)' },
-  HIGH: { color: '#F44336', label: 'Visoko', bg: 'rgba(244,67,54,0.12)' },
-  MEDIUM: { color: '#FF9800', label: 'Srednje', bg: 'rgba(255,152,0,0.12)' },
-  LOW: { color: '#4CAF50', label: 'Nisko', bg: 'rgba(76,175,80,0.12)' },
-};
 
 interface StatsBarProps {
   compact?: boolean;
@@ -31,21 +30,23 @@ export function StatsBar({ compact = false }: StatsBarProps) {
   if (compact) {
     return (
       <div className="flex items-center gap-2">
-        {(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as AlertSeverity[]).map((sev) => {
+        {SEVERITY_ORDER.map((sev) => {
           const count = counts[sev] ?? 0;
           if (count === 0) return null;
-          const cfg = SEV_CONFIG[sev];
+          const color = SEVERITY_COLORS[sev];
+          const bg = SEVERITY_BG[sev];
+          const label = SEVERITY_LABELS[sev];
           return (
             <span
               key={sev}
               className="rounded-md px-2 py-0.5 text-[10px] font-bold"
               style={{
-                backgroundColor: cfg.bg,
-                color: cfg.color,
-                border: '1px solid ' + cfg.color + '30',
+                backgroundColor: bg,
+                color: color,
+                border: '1px solid ' + color + '30',
               }}
             >
-              {count} {cfg.label}
+              {count} {label}
             </span>
           );
         })}
@@ -85,22 +86,24 @@ export function StatsBar({ compact = false }: StatsBarProps) {
         </span>
       </div>
       <div className="flex flex-wrap gap-1.5">
-        {(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as AlertSeverity[]).map((sev) => {
-          const cfg = SEV_CONFIG[sev];
+        {SEVERITY_ORDER.map((sev) => {
+          const color = SEVERITY_COLORS[sev];
+          const bg = SEVERITY_BG[sev];
+          const label = SEVERITY_LABELS[sev];
           const count = counts[sev] ?? 0;
           return (
             <div
               key={sev}
               className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold"
               style={{
-                backgroundColor: cfg.bg,
-                color: cfg.color,
-                border: '1px solid ' + cfg.color + '25',
+                backgroundColor: bg,
+                color: color,
+                border: '1px solid ' + color + '25',
                 opacity: count > 0 ? 1 : 0.3,
               }}
             >
               <span className="font-black tabular-nums">{count}</span>
-              <span>{cfg.label}</span>
+              <span>{label}</span>
             </div>
           );
         })}

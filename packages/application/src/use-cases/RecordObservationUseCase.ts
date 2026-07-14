@@ -12,7 +12,12 @@ import {
 } from '@stormwatch/domain';
 import type { RecordObservationCommand, AlertDto } from '../dtos/index.js';
 import { toAlertDto } from '../dtos/index.js';
-import type { IIdGenerator, INotificationService, IEventBus, IRegionNameResolver } from '../ports/index.js';
+import type {
+  IIdGenerator,
+  INotificationService,
+  IEventBus,
+  IRegionNameResolver,
+} from '../ports/index.js';
 
 interface Deps {
   alertRepository: IWeatherAlertRepository;
@@ -40,7 +45,8 @@ export class RecordObservationUseCase {
     const coordinatesResult = Coordinates.create(cmd.latitude, cmd.longitude);
     if (!coordinatesResult.ok) throw new Error(coordinatesResult.error);
 
-    const metricsResult = WeatherMetrics.create({      temperatureCelsius: cmd.temperatureCelsius,
+    const metricsResult = WeatherMetrics.create({
+      temperatureCelsius: cmd.temperatureCelsius,
       windSpeedKmh: cmd.windSpeedKmh,
       windGustKmh: cmd.windGustKmh,
       precipitationMmPerHour: cmd.precipitationMmPerHour,

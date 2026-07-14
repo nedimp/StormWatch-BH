@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { AlertDto } from '../../types';
 import { formatDistanceToNow } from 'date-fns';
+import { SEVERITY_BADGE_LABELS } from '../../constants/severity';
 
 interface AlertCardProps {
   alert: AlertDto;
@@ -28,13 +29,6 @@ const CONDITION_ICON: Record<string, React.ElementType> = {
   EXTREME_HEAT: Thermometer,
   FROST: Snowflake,
   TORNADO_RISK: Wind,
-};
-
-const SEV_LABEL: Record<string, string> = {
-  CRITICAL: 'KRITIČNO',
-  HIGH: 'VISOKO',
-  MEDIUM: 'SREDNJE',
-  LOW: 'NISKO',
 };
 
 export function AlertCard({ alert, onResolve }: AlertCardProps) {
@@ -75,7 +69,7 @@ export function AlertCard({ alert, onResolve }: AlertCardProps) {
             className="rounded-md px-2 py-0.5 text-[10px] font-black tracking-wide text-white"
             style={{ backgroundColor: alert.severityColor }}
           >
-            {SEV_LABEL[alert.severity] ?? alert.severity}
+            {SEVERITY_BADGE_LABELS[alert.severity] ?? alert.severity}
           </span>
           {isEscalated && (
             <span className="rounded-md bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600 border border-orange-200">
