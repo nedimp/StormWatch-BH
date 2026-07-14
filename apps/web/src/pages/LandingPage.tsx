@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useId } from 'react';
 import {
-  CloudLightning, Activity, Thermometer, Map as MapIcon,
+  Activity, Thermometer, Map as MapIcon,
   Bell, Home, ArrowRight, Shield, Zap, Clock, CheckCircle2, Loader2, Mail,
 } from 'lucide-react';
 import { observationsApi, subscriptionsApi } from '../services/api';
+import { TopNav } from '../components/dashboard/TopNav';
 
 interface LiveStat { stationId: string; city: string; temp: number; }
 
@@ -134,28 +135,8 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0f1117] text-slate-200 overflow-x-hidden pb-16 sm:pb-0">
 
-      {/* ── Floating Nav (desktop only) ── */}
-      <div className="fixed top-4 inset-x-0 z-50 px-4 hidden sm:flex justify-center pointer-events-none">
-        <nav className="pointer-events-auto flex items-center justify-between gap-6 rounded-2xl border border-slate-700/50 bg-slate-900/80 px-4 py-2.5 shadow-xl shadow-black/30 backdrop-blur-xl w-full max-w-2xl">
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-md shadow-indigo-900/60">
-              <CloudLightning size={13} className="text-white" strokeWidth={2} />
-            </div>
-            <span className="text-sm font-bold text-slate-100 tracking-tight">StormWatch BH</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <a href="#subscribe" className="text-xs font-medium text-slate-400 transition hover:text-indigo-400">Pretplata</a>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Sistem aktivan
-            </div>
-            <button onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500">
-              Dashboard <ArrowRight size={11} />
-            </button>
-          </div>
-        </nav>
-      </div>
+      {/* ── Shared floating nav (desktop only) ── */}
+      <TopNav page="landing" />
 
       {/* ── Hero ── */}
       <section className="relative flex flex-col items-center justify-center px-6 pt-20 pb-20 sm:pt-40 text-center overflow-hidden">
