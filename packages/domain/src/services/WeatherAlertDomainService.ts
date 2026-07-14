@@ -138,13 +138,11 @@ export class WeatherAlertDomainService {
       );
     }
 
+    const noAlertCondition = WeatherCondition.create(WeatherConditionType.FOG, 'Normal conditions');
     return {
       shouldAlert: false,
       severity: AlertSeverity.low(),
-      condition: WeatherCondition.create(
-        WeatherConditionType.FOG,
-        'Normal conditions',
-      ).value as WeatherCondition,
+      condition: noAlertCondition.ok ? noAlertCondition.value : ({} as WeatherCondition),
       title: '',
       description: '',
       recommendations: [],

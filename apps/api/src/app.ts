@@ -60,12 +60,21 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   // ── DI Container ─────────────────────────────────────────────────────────
   const container = buildContainer();
   app.decorate('container', container);
-  // ── Static frontend (production) ─────────────────────────────────────
+
+  // ── Routes ───────────────────────────────────────────────────────────────
+  await app.register(healthRoutes, { prefix: '/health' });
+  await app.register(alertRoutes, { prefix: '/api/v1/alerts' });
+  await app.register(observationRoutes, { prefix: '/api/v1/observations' });
+  await app.register(regionRoutes, { prefix: '/api/v1/regions' });
+  await app.register(subscriptionRoutes, { prefix: '/api/v1/subscriptions' });
+  await app.register(websocketRoutes, { prefix: '/ws' });
+
+  // ── Static frontend (production) ─────────────────────────────────────────
+  // Registered AFTER API routes so @fastify/static wildcard cannot shadow them
   const staticPath = process.env['STATIC_PATH'];
   if (staticPath && existsSync(staticPath)) {
     await app.register(staticFiles, { root: staticPath, prefix: '/' });
     app.setNotFoundHandler((req, reply) => {
-      // Only serve SPA index.html for frontend routes — never for assets/API/WS
       const url = req.url.split('?')[0];
       if (
         url.startsWith('/assets/') ||
@@ -79,13 +88,6 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
       }
     });
   }
-  // ── Routes ───────────────────────────────────────────────────────────────
-  await app.register(healthRoutes, { prefix: '/health' });
-  await app.register(alertRoutes, { prefix: '/api/v1/alerts' });
-  await app.register(observationRoutes, { prefix: '/api/v1/observations' });
-  await app.register(regionRoutes, { prefix: '/api/v1/regions' });
-  await app.register(subscriptionRoutes, { prefix: '/api/v1/subscriptions' });
-  await app.register(websocketRoutes, { prefix: '/ws' });
 
   return app;
 }

@@ -1,6 +1,5 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { GmailNotificationService } from '../../infrastructure/notifications/GmailNotificationService.js';
 
 const subscribeSchema = z.object({
   email: z.string().email('Unesite ispravnu email adresu'),
@@ -30,11 +29,8 @@ export async function subscriptionRoutes(app: FastifyInstance): Promise<void> {
     const subscriber = await repo.subscribe(email, regions);
     app.log.info({ email }, 'New subscriber');
 
-    // Send welcome/confirmation email (fire-and-forget)
-    const notifService = app.container.notificationService;
-    if (notifService instanceof GmailNotificationService) {
-      void notifService.sendWelcomeEmail(subscriber.email);
-    }
+    // Send welcome email via the notification service port (not instanceof check)
+    void app.container.notificationService.sendWelcomeEmail(subscriber.email);
 
     return reply.code(201).send({
       message: 'Uspješno ste se pretplatili na upozorenja o nevremenu!',
@@ -71,10 +67,10 @@ export async function subscriptionRoutes(app: FastifyInstance): Promise<void> {
     .icon { font-size: 48px; margin-bottom: 20px; }
     h1 { color: #0f172a; font-size: 22px; font-weight: 800; margin-bottom: 12px; }
     p { color: #64748b; font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
-    a { display: inline-block; background: #4f46e5; color: #fff;
+    a { display: inline-block; background: #0f172a; color: #fff;
         text-decoration: none; padding: 12px 28px; border-radius: 10px;
         font-size: 14px; font-weight: 700; }
-    a:hover { background: #4338ca; }
+    a:hover { background: #1e293b; }
     .email { color: #1e293b; font-weight: 600; }
   </style>
 </head>

@@ -48,6 +48,7 @@ export interface INotificationService {
   sendAlertCreated(alert: AlertDto, subscriberIds: string[]): Promise<void>;
   sendAlertEscalated(alert: AlertDto, subscriberIds: string[]): Promise<void>;
   sendAlertResolved(alertId: string, regionId: string, subscriberIds: string[]): Promise<void>;
+  sendWelcomeEmail(email: string): Promise<void>;
 }
 
 /**

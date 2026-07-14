@@ -74,7 +74,9 @@ export async function alertRoutes(app: FastifyInstance): Promise<void> {
       const repo = app.container.alertRepository;
       const alert = await repo.findById(id);
       if (!alert) return reply.code(404).send({ error: 'Alert not found' });
-      return reply.code(200).send({ data: alert });
+      // Convert to DTO — never expose the domain entity directly
+      const { toAlertDto } = await import('@stormwatch/application');
+      return reply.code(200).send({ data: toAlertDto(alert) });
     },
   );
 
