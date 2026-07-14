@@ -1,10 +1,10 @@
 import { Suspense, lazy, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Activity, Thermometer, BellRing, Map as MapIcon, Home } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { TopNav } from '../components/dashboard/TopNav';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
 import { AlertList } from '../components/alerts/AlertList';
 import { CurrentConditionsPanel } from '../components/dashboard/CurrentConditionsPanel';
+import { MobileDashboardNav } from '../components/dashboard/MobileDashboardNav';
 import { useAlertStore } from '../store/alertStore';
 import { ENTITY_COLORS, ENTITY_LABELS } from '../constants/entities';
 
@@ -16,7 +16,6 @@ type Tab = 'alerts' | 'conditions';
 
 export function DashboardPage() {
   useWeatherSocket();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('alerts');
   const [mobileView, setMobileView] = useState<'map' | Tab>('conditions');
   const alerts = useAlertStore((s) => s.alerts);
@@ -107,61 +106,11 @@ export function DashboardPage() {
           </div>
         )}
         {/* Mobile bottom nav */}
-        <nav
-          className="shrink-0 flex border-t border-slate-200 bg-white"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-        >
-          <button
-            onClick={() => navigate('/')}
-            className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-400"
-          >
-            <Home size={20} strokeWidth={1.5} />
-            Početna
-          </button>
-          <button
-            onClick={() => setMobileView('map')}
-            className={
-              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'map' ? 'text-blue-600' : 'text-slate-400')
-            }
-          >
-            <MapIcon size={20} strokeWidth={1.5} />
-            Karta
-          </button>
-          <button
-            onClick={() => {
-              setMobileView('alerts');
-              setActiveTab('alerts');
-            }}
-            className={
-              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold relative ' +
-              (mobileView === 'alerts' ? 'text-blue-600' : 'text-slate-400')
-            }
-          >
-            <div className="relative">
-              <BellRing size={20} strokeWidth={1.5} />
-              {alerts.length > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-black text-white">
-                  {alerts.length}
-                </span>
-              )}
-            </div>
-            Upozorenja
-          </button>
-          <button
-            onClick={() => {
-              setMobileView('conditions');
-              setActiveTab('conditions');
-            }}
-            className={
-              'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'conditions' ? 'text-blue-600' : 'text-slate-400')
-            }
-          >
-            <Thermometer size={20} strokeWidth={1.5} />
-            Uslovi
-          </button>
-        </nav>
+        <MobileDashboardNav
+          mobileView={mobileView}
+          setMobileView={setMobileView}
+          setActiveTab={setActiveTab}
+        />
       </div>
     </div>
   );

@@ -1,18 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { CloudLightning, Thermometer, Home, ArrowRight, Bell, Activity } from 'lucide-react';
+import { CloudLightning, Home, ArrowRight, Bell, Activity } from 'lucide-react';
 import { TopNav } from '../components/dashboard/TopNav';
 import { SubscribeSection } from '../components/landing/SubscribeSection';
-import { useLiveStats } from '../hooks/useLiveStats';
-import { useLiveAlerts } from '../hooks/useLiveAlerts';
-import { tempColor } from '../utils/weather';
+import { MobileLandingNav } from '../components/landing/MobileLandingNav';
+import { LiveAlertBanner } from '../components/landing/LiveAlertBanner';
+import { LiveTempsStrip } from '../components/landing/LiveTempsStrip';
 import { FEATURES, SEVERITY_LEGEND } from '../constants/landingContent';
-import { SEVERITY_COLORS, SEVERITY_LABELS, SEVERITY_ORDER } from '../constants/severity';
-import type { AlertSeverity } from '../types';
+import { SEVERITY_COLORS } from '../constants/severity';
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const liveStats = useLiveStats();
-  const liveAlerts = useLiveAlerts();
 
   return (
     <div
@@ -54,75 +51,12 @@ export function LandingPage() {
         </div>
       </section>
 
+
       {/* ── Live alert status banner ── */}
-      {liveAlerts !== null && (
-        <section className="border-b border-slate-100 bg-white px-6 py-4">
-          <div className="mx-auto max-w-4xl flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span
-                className={
-                  'h-2 w-2 rounded-full ' +
-                  (liveAlerts.count > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500')
-                }
-              />
-              <span className="text-sm font-semibold text-slate-700">
-                {liveAlerts.count > 0
-                  ? `${liveAlerts.count} aktivno upozorenje${liveAlerts.count > 1 ? 'a' : ''}`
-                  : 'Nema aktivnih upozorenja'}
-              </span>
-            </div>
-            {liveAlerts.count > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                {(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => {
-                  const n = liveAlerts.bySeverity[sev];
-                  if (!n) return null;
-                  return (
-                    <span
-                      key={sev}
-                      className="rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white"
-                      style={{ backgroundColor: SEVERITY_COLORS[sev] }}
-                    >
-                      {n}× {SEVERITY_LABELS[sev as AlertSeverity]}
-                    </span>
-                  );
-                })}
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="text-xs font-semibold text-slate-500 underline underline-offset-2 hover:text-slate-800"
-                >
-                  Pogledaj &rarr;
-                </button>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      <LiveAlertBanner />
 
       {/* ── Live temps ── */}
-      {liveStats.length > 0 && (
-        <section className="border-y border-slate-100 bg-slate-50 px-6 py-5">
-          <p className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-slate-400 text-center">
-            Trenutne temperature · Open-Meteo · live
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {liveStats.map((s) => (
-              <div
-                key={s.stationId}
-                className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 shadow-sm"
-              >
-                <Thermometer size={13} className="text-slate-400" />
-                <span className="text-xs font-medium text-slate-500">{s.city}</span>
-                <span
-                  className="text-sm font-black tabular-nums"
-                  style={{ color: tempColor(s.temp) }}
-                >
-                  {s.temp}°C
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <LiveTempsStrip />
 
       {/* ── Features ── */}
       <section className="px-6 py-20">
@@ -218,33 +152,9 @@ export function LandingPage() {
         </p>
       </footer>
 
-      {/* ── Mobile bottom nav (landing page) ── */}
-      <nav
-        className="fixed bottom-0 inset-x-0 z-50 flex sm:hidden border-t border-slate-200 bg-white"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-      >
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-blue-600"
-        >
-          <Home size={20} strokeWidth={1.5} />
-          Početna
-        </button>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-400 hover:text-slate-600 transition"
-        >
-          <Activity size={20} strokeWidth={1.5} />
-          Dashboard
-        </button>
-        <a
-          href="#subscribe"
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-400 hover:text-slate-600 transition"
-        >
-          <Bell size={20} strokeWidth={1.5} />
-          Pretplata
-        </a>
-      </nav>
+
+      {/* ── Mobile bottom nav ── */}
+      <MobileLandingNav />
     </div>
   );
 }
