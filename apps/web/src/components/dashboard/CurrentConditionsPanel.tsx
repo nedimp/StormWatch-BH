@@ -1,7 +1,7 @@
 import {
   Sun, CloudSun, Cloud, CloudFog, CloudDrizzle,
   CloudRain, CloudSnow, CloudHail, CloudLightning,
-  Wind, Droplets, Gauge, Eye, Thermometer, Clock, MapPin,
+  Wind, Droplets, Gauge, Eye, Thermometer, Clock, MapPin, Search,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -106,17 +106,17 @@ function StationRow({ obs, hasAlert, alertColor, isNearest }: {
 
   return (
     <div
-      className="rounded-lg border px-3 py-2.5 transition-colors"
+      className="rounded-lg border px-3 py-2.5 transition-colors bg-white"
       style={{
-        borderColor: hasAlert ? alertColor + '50' : isNearest ? '#6366f1' : '#1e293b',
-        backgroundColor: hasAlert ? alertColor + '08' : isNearest ? 'rgba(99,102,241,0.06)' : 'transparent',
+        borderColor: hasAlert ? alertColor + '50' : isNearest ? '#6366f1' : '#e2e8f0',
+        boxShadow: isNearest ? '0 0 0 2px rgba(99,102,241,0.1)' : undefined,
       }}
     >
       {/* Station name + condition + temperature */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <div className="flex items-center gap-1.5 min-w-0">
           <Icon size={13} style={{ color, flexShrink: 0 }} strokeWidth={1.5} />
-          <span className="text-[11px] font-semibold text-slate-300 truncate">{obs.stationName}</span>
+          <span className="text-[11px] font-semibold text-slate-700 truncate">{obs.stationName}</span>
           {isNearest && (
             <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
               <MapPin size={7} />
@@ -136,7 +136,7 @@ function StationRow({ obs, hasAlert, alertColor, isNearest }: {
       </div>
 
       {/* Row 2: condition label */}
-      <p className="text-[10px] text-slate-600 mb-2">{label}</p>
+      <p className="text-[10px] text-slate-400 mb-2">{label}</p>
 
       {/* Row 3: metrics — 2 columns, inline value+unit */}
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
@@ -147,9 +147,9 @@ function StationRow({ obs, hasAlert, alertColor, isNearest }: {
           { Icon: Eye,      value: Number(obs.visibilityKm.toFixed(1)), unit: 'km',  label: 'Vidljivost' },
         ].map(({ Icon: MI, value, unit, label: ml }) => (
           <div key={ml} className="flex items-center gap-1.5">
-            <MI size={10} className="text-slate-700 shrink-0" />
+            <MI size={10} className="text-slate-400 shrink-0" />
             <span className="text-[10px] text-slate-500 tabular-nums">
-              <span className="font-semibold text-slate-400">{value}</span>
+              <span className="font-semibold text-slate-600">{value}</span>
               <span className="ml-0.5">{unit}</span>
             </span>
           </div>
@@ -162,6 +162,7 @@ function StationRow({ obs, hasAlert, alertColor, isNearest }: {
 export function CurrentConditionsPanel() {
   const alerts = useAlertStore((s) => s.alerts);
   const alertsByRegion = new Map(alerts.map((a) => [a.regionId, a]));
+  const [query, setQuery] = useState('');
 
   const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['conditions'],
@@ -177,7 +178,7 @@ export function CurrentConditionsPanel() {
     return (
       <div className="space-y-2 p-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-20 animate-pulse rounded-lg border border-slate-800 bg-slate-800/30" />
+          <div key={i} className="h-20 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
         ))}
       </div>
     );
@@ -186,9 +187,9 @@ export function CurrentConditionsPanel() {
   if (observations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <Thermometer size={28} className="text-slate-700 mb-3" strokeWidth={1.5} />
+        <Thermometer size={28} className="text-slate-300 mb-3" strokeWidth={1.5} />
         <p className="text-sm font-semibold text-slate-500">Nema podataka</p>
-        <p className="mt-1 text-xs text-slate-700">Pokrenite weather-worker</p>
+        <p className="mt-1 text-xs text-slate-400">Pokrenite weather-worker</p>
       </div>
     );
   }
@@ -199,34 +200,53 @@ export function CurrentConditionsPanel() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/60 shrink-0">
-        <div className="flex items-center gap-1.5 text-slate-600">
+      {/* Header */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 shrink-0">
+        <div className="flex items-center gap-1.5 text-slate-400">
           <Clock size={10} />
           <span className="text-[10px]">ažurirano u {updatedLabel}</span>
         </div>
         <div className="flex items-center gap-2">
           {cityName && (
-            <span className="flex items-center gap-1 text-[10px] text-indigo-400 font-medium">
+            <span className="flex items-center gap-1 text-[10px] text-indigo-500 font-medium">
               <MapPin size={9} />
               {cityName}
             </span>
           )}
-          <span className="text-[10px] text-slate-700">{observations.length} stanica</span>
+          <span className="text-[10px] text-slate-400">{observations.length} stanica</span>
         </div>
       </div>
-      <div className="divide-y divide-slate-800/60">
-        {observations.map((obs) => {
-          const alert = alertsByRegion.get(obs.regionId);
-          return (
-            <StationRow
-              key={obs.stationId}
-              obs={obs}
-              hasAlert={!!alert}
-              alertColor={alert?.severityColor}
-              isNearest={obs.stationId === nearestId}
-            />
-          );
-        })}
+      {/* Search */}
+      <div className="px-3 py-2 border-b border-slate-100 shrink-0">
+        <div className="relative">
+          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Pretraži grad..."
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-7 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300"
+          />
+        </div>
+      </div>
+      {/* Rows */}
+      <div className="divide-y divide-slate-100 px-3 py-1 space-y-1.5">
+        {observations
+          .filter((obs) =>
+            !query.trim() || obs.stationName.toLowerCase().includes(query.toLowerCase())
+          )
+          .map((obs) => {
+            const alert = alertsByRegion.get(obs.regionId);
+            return (
+              <StationRow
+                key={obs.stationId}
+                obs={obs}
+                hasAlert={!!alert}
+                alertColor={alert?.severityColor}
+                isNearest={obs.stationId === nearestId}
+              />
+            );
+          })}
       </div>
     </div>
   );
