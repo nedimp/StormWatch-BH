@@ -36,6 +36,28 @@ export async function migrate(): Promise<void> {
     CREATE INDEX IF NOT EXISTS alerts_region_idx ON alerts (region_id);
     CREATE INDEX IF NOT EXISTS alerts_status_idx ON alerts (status);
     CREATE INDEX IF NOT EXISTS alerts_issued_idx ON alerts (issued_at);
+
+    CREATE TABLE IF NOT EXISTS observations (
+      id                       TEXT        PRIMARY KEY,
+      station_id               TEXT        NOT NULL,
+      region_id                TEXT        NOT NULL,
+      latitude                 REAL        NOT NULL,
+      longitude                REAL        NOT NULL,
+      temperature_celsius      REAL        NOT NULL,
+      wind_speed_kmh           REAL        NOT NULL,
+      wind_gust_kmh            REAL        NOT NULL,
+      precipitation_mm_per_hour REAL       NOT NULL,
+      humidity_percent         REAL        NOT NULL,
+      visibility_km            REAL        NOT NULL,
+      pressure_hpa             REAL        NOT NULL,
+      weather_code             INTEGER,
+      source                   TEXT        NOT NULL DEFAULT 'API_PROVIDER',
+      observed_at              TIMESTAMPTZ NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS observations_station_idx ON observations (station_id);
+    CREATE INDEX IF NOT EXISTS observations_region_idx  ON observations (region_id);
+    CREATE INDEX IF NOT EXISTS observations_observed_idx ON observations (observed_at DESC);
   `);
 
   logger.info('Database migrations complete');

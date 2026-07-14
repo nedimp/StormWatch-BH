@@ -235,7 +235,7 @@ export function CurrentConditionsPanel() {
   const updatedLabel = dataUpdatedAt ? format(new Date(dataUpdatedAt), 'HH:mm') : '';
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 shrink-0">
         <div className="flex items-center gap-1.5 text-slate-400">
@@ -269,7 +269,7 @@ export function CurrentConditionsPanel() {
         </div>
       </div>
       {/* Rows */}
-      <div className="divide-y divide-slate-100 px-3 py-1 space-y-1.5">
+      <div className="flex-1 overflow-y-auto divide-y divide-slate-100 px-3 py-1 space-y-1.5">
         {observations
           .filter(
             (obs) => !query.trim() || obs.stationName.toLowerCase().includes(query.toLowerCase()),

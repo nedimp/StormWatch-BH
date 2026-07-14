@@ -72,7 +72,6 @@ export function DashboardPage() {
             <CurrentConditionsPanel />
           </div>
         )}
-
         {/* Mobile bottom nav */}
         <nav
           className="shrink-0 flex border-t border-slate-200 bg-white"
