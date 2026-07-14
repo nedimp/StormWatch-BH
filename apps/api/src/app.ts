@@ -9,8 +9,10 @@ import { alertRoutes } from './presentation/routes/alertRoutes.js';
 import { observationRoutes } from './presentation/routes/observationRoutes.js';
 import { regionRoutes } from './presentation/routes/regionRoutes.js';
 import { healthRoutes } from './presentation/routes/healthRoutes.js';
+import { subscriptionRoutes } from './presentation/routes/subscriptionRoutes.js';
 import { websocketRoutes } from './presentation/websocket/weatherSocket.js';
 import { buildContainer } from './infrastructure/container.js';
+import { migrate } from './infrastructure/database/migrate.js';
 import { logger } from './infrastructure/logger.js';
 
 export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
@@ -45,6 +47,14 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   });
   await app.register(swaggerUi, { routePrefix: '/docs' });
 
+  // ── DB migrations ────────────────────────────────────────────────────────
+  try {
+    await migrate();
+  } catch (err) {
+    logger.error(err, 'Database migration failed');
+    throw err;
+  }
+
   // ── DI Container ─────────────────────────────────────────────────────────
   const container = buildContainer();
   app.decorate('container', container);
@@ -54,6 +64,7 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   await app.register(alertRoutes, { prefix: '/api/v1/alerts' });
   await app.register(observationRoutes, { prefix: '/api/v1/observations' });
   await app.register(regionRoutes, { prefix: '/api/v1/regions' });
+  await app.register(subscriptionRoutes, { prefix: '/api/v1/subscriptions' });
   await app.register(websocketRoutes, { prefix: '/ws' });
 
   return app;

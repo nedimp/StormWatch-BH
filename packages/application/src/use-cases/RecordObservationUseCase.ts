@@ -147,6 +147,10 @@ export class RecordObservationUseCase {
     }
     newAlert.clearDomainEvents();
 
-    return { alertCreated: toAlertDto(newAlert) };
+    const alertDto = toAlertDto(newAlert);
+    // Send email notifications to all subscribers (fire-and-forget)
+    void this.deps.notificationService.sendAlertCreated(alertDto);
+
+    return { alertCreated: alertDto };
   }
 }

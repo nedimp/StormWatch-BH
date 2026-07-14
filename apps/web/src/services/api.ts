@@ -37,3 +37,12 @@ export const observationsApi = {
       '/observations/current',
     ),
 };
+
+export const subscriptionsApi = {
+  subscribe: (email: string) =>
+    apiFetch<{ message: string; subscriber: { email: string; subscribedAt: string } }>(
+      '/subscriptions',
+      { method: 'POST', body: JSON.stringify({ email }) },
+    ),
+  count: () => apiFetch<{ count: number }>('/subscriptions/count'),
+};
