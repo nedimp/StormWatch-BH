@@ -98,13 +98,13 @@ export function LandingPage() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-700"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-500"
           >
             Otvori Dashboard <ArrowRight size={15} />
           </button>
           <a
             href="#subscribe"
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:text-blue-600"
           >
             <Bell size={14} /> Pretplatite se
           </a>
@@ -239,7 +239,7 @@ export function LandingPage() {
       <section className="px-6 py-20">
         <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-10 text-center shadow-sm">
           <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 shadow-lg shadow-slate-200">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-100">
               <CloudLightning size={22} className="text-white" strokeWidth={2} />
             </div>
           </div>
@@ -250,7 +250,7 @@ export function LandingPage() {
           </p>
           <button
             onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-700"
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-500"
           >
             Otvori Dashboard <ArrowRight size={15} />
           </button>
@@ -260,7 +260,7 @@ export function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-slate-100 px-6 py-8 text-center bg-white">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-900">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600">
             <CloudLightning size={11} className="text-white" strokeWidth={2} />
           </div>
           <span className="text-xs font-bold text-slate-600">StormWatch BH</span>
@@ -277,7 +277,7 @@ export function LandingPage() {
       >
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-slate-900"
+          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold text-blue-600"
         >
           <Home size={20} strokeWidth={1.5} />
           Početna

@@ -63,7 +63,7 @@ export function SubscribeSection() {
             <button
               type="submit"
               disabled={state === 'loading'}
-              className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-slate-700 disabled:opacity-60"
+              className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-500 disabled:opacity-60"
             >
               {state === 'loading' ? (
                 <><Loader2 size={15} className="animate-spin" /> Slanje...</>

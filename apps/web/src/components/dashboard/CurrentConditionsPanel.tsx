@@ -72,7 +72,7 @@ export function CurrentConditionsPanel() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Pretraži grad..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-7 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-7 pr-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
           />
         </div>
       </div>

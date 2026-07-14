@@ -38,7 +38,7 @@ export function DashboardPage() {
             <Activity size={14} className="text-slate-400" />
             <span className="text-sm font-semibold text-slate-700">Upozorenja</span>
             {alerts.length > 0 && (
-              <span className="ml-auto rounded-full bg-black px-2 py-0.5 text-[10px] font-black text-white">
+              <span className="ml-auto rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">
                 {alerts.length}
               </span>
             )}
@@ -108,7 +108,7 @@ export function DashboardPage() {
             onClick={() => setMobileView('map')}
             className={
               'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'map' ? 'text-black' : 'text-slate-400')
+              (mobileView === 'map' ? 'text-blue-600' : 'text-slate-400')
             }
           >
             <MapIcon size={20} strokeWidth={1.5} />
@@ -121,13 +121,13 @@ export function DashboardPage() {
             }}
             className={
               'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold relative ' +
-              (mobileView === 'alerts' ? 'text-black' : 'text-slate-400')
+              (mobileView === 'alerts' ? 'text-blue-600' : 'text-slate-400')
             }
           >
             <div className="relative">
               <BellRing size={20} strokeWidth={1.5} />
               {alerts.length > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[9px] font-black text-white">
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-black text-white">
                   {alerts.length}
                 </span>
               )}
@@ -141,7 +141,7 @@ export function DashboardPage() {
             }}
             className={
               'flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold ' +
-              (mobileView === 'conditions' ? 'text-black' : 'text-slate-400')
+              (mobileView === 'conditions' ? 'text-blue-600' : 'text-slate-400')
             }
           >
             <Thermometer size={20} strokeWidth={1.5} />

@@ -19,8 +19,8 @@ export function StationRow({ obs, hasAlert, alertColor, isNearest }: StationRowP
     <div
       className="rounded-lg border px-3 py-2.5 transition-colors bg-white"
       style={{
-        borderColor: hasAlert ? alertColor + '50' : isNearest ? '#334155' : '#e2e8f0',
-        boxShadow: isNearest ? '0 0 0 2px rgba(51,65,85,0.1)' : undefined,
+        borderColor: hasAlert ? alertColor + '50' : isNearest ? '#2563eb' : '#e2e8f0',
+        boxShadow: isNearest ? '0 0 0 2px rgba(37,99,235,0.1)' : undefined,
       }}
     >
       {/* Station name + condition icon + temperature */}
@@ -29,7 +29,7 @@ export function StationRow({ obs, hasAlert, alertColor, isNearest }: StationRowP
           <Icon size={13} style={{ color, flexShrink: 0 }} strokeWidth={1.5} />
           <span className="text-[11px] font-semibold text-slate-700 truncate">{obs.stationName}</span>
           {isNearest && (
-            <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-slate-900 text-white">
+            <span className="flex items-center gap-0.5 shrink-0 rounded px-1 py-0.5 text-[8px] font-black bg-blue-600 text-white">
               <MapPin size={7} />
               Vi ste tu
             </span>
