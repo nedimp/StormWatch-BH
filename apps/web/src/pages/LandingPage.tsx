@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   CloudLightning, Activity, Thermometer, Map, Bell,
-  Wifi, ArrowRight, Shield, Zap, Clock,
+  ArrowRight, Shield, Zap, Clock,
 } from 'lucide-react';
 import { observationsApi } from '../services/api';
 
@@ -96,31 +96,34 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0f1117] text-slate-200 overflow-x-hidden">
 
-      {/* ── Nav ── */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-slate-800/60 sticky top-0 z-50 bg-[#0f1117]/90 backdrop-blur-md">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 shadow-lg shadow-indigo-900/60">
-            <CloudLightning size={15} className="text-white" strokeWidth={2} />
+      {/* ── Floating Nav — hidden on mobile ── */}
+      <div className="fixed top-4 inset-x-0 z-50 px-4 hidden sm:flex justify-center pointer-events-none">
+        <nav className="pointer-events-auto flex items-center justify-between gap-6 rounded-2xl border border-slate-700/50 bg-slate-900/80 px-4 py-2.5 shadow-xl shadow-black/30 backdrop-blur-xl w-full max-w-2xl">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-md shadow-indigo-900/60">
+              <CloudLightning size={13} className="text-white" strokeWidth={2} />
+            </div>
+            <span className="text-sm font-bold text-slate-100 tracking-tight">StormWatch BH</span>
           </div>
-          <span className="text-sm font-bold text-slate-100 tracking-tight">StormWatch BH</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-emerald-400">
-            <Wifi size={12} />
-            <span className="hidden sm:inline">Sistem aktivan</span>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Sistem aktivan</span>
+            </div>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500"
+            >
+              Dashboard
+              <ArrowRight size={11} />
+            </button>
           </div>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500"
-          >
-            Dashboard
-            <ArrowRight size={12} />
-          </button>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* ── Hero ── */}
-      <section className="relative flex flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center px-6 pt-36 pb-24 sm:pt-40 text-center overflow-hidden">
         {/* Background glow */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-600/10 blur-3xl" />

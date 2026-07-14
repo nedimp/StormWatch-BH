@@ -70,8 +70,8 @@ export function DashboardPage() {
 
   return (
     <div className="flex h-screen flex-col bg-[#0f1117] overflow-hidden">
-      {/* ── Header ── */}
-      <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2.5 shrink-0">
+      {/* ── Header — hidden on mobile (bottom nav used instead) ── */}
+      <header className="hidden md:flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2.5 shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-lg shadow-indigo-900/50">
             <CloudLightning size={14} className="text-white" strokeWidth={2} />
