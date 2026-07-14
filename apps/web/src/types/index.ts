@@ -35,3 +35,21 @@ export interface RegionDto {
   centroid: { lat: number; lng: number };
   population: number;
 }
+
+export interface CurrentConditionDto {
+  id: string;
+  stationId: string;
+  stationName: string;
+  regionId: string;
+  latitude: number;
+  longitude: number;
+  temperatureCelsius: number;
+  windSpeedKmh: number;
+  windGustKmh: number;
+  precipitationMmPerHour: number;
+  humidityPercent: number;
+  visibilityKm: number;
+  pressureHpa: number;
+  observedAt: string;
+  source: string;
+}

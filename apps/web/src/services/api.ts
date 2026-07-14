@@ -1,4 +1,4 @@
-import type { AlertDto, RegionDto } from '../types';
+import type { AlertDto, RegionDto, CurrentConditionDto } from '../types';
 
 const BASE = '/api/v1';
 
@@ -29,4 +29,9 @@ export const alertsApi = {
 
 export const regionsApi = {
   getAll: () => apiFetch<{ data: RegionDto[]; count: number }>('/regions'),
+};
+
+export const observationsApi = {
+  getCurrent: () =>
+    apiFetch<{ data: CurrentConditionDto[]; count: number; fetchedAt: string }>('/observations/current'),
 };

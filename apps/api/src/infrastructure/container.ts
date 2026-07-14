@@ -25,7 +25,7 @@ import { ConsoleNotificationService } from './notifications/ConsoleNotificationS
  */
 export interface AppContainer {
   alertRepository: IWeatherAlertRepository;
-  observationRepository: IWeatherObservationRepository;
+  observationRepository: InMemoryObservationRepository;
   eventBus: InProcessEventBus;
   getActiveAlertsUseCase: GetActiveAlertsUseCase;
   recordObservationUseCase: RecordObservationUseCase;

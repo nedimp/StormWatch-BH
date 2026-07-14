@@ -31,4 +31,17 @@ export class InMemoryObservationRepository implements IWeatherObservationReposit
   async save(observation: WeatherObservation): Promise<void> {
     this.store.set(observation.id, observation);
   }
+
+  async findAllLatestPerStation(): Promise<WeatherObservation[]> {
+    const latestByStation = new Map<string, WeatherObservation>();
+    for (const obs of this.store.values()) {
+      const existing = latestByStation.get(obs.stationId);
+      if (!existing || obs.observedAt > existing.observedAt) {
+        latestByStation.set(obs.stationId, obs);
+      }
+    }
+    return [...latestByStation.values()].sort(
+      (a, b) => b.observedAt.getTime() - a.observedAt.getTime(),
+    );
+  }
 }

@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
 import { AlertList } from '../components/alerts/AlertList';
 import { StatsBar } from '../components/dashboard/StatsBar';
+import { CurrentConditionsBar } from '../components/dashboard/CurrentConditionsBar';
 import { useAlertStore } from '../store/alertStore';
 
 const WeatherMap = lazy(() =>
@@ -44,6 +45,11 @@ export function DashboardPage() {
 
       <div className="px-4 pt-3 shrink-0">
         <StatsBar />
+      </div>
+
+      {/* ── Current conditions strip ── */}
+      <div className="px-4 pt-2 shrink-0">
+        <CurrentConditionsBar />
       </div>
 
       <main className="flex flex-1 gap-3 overflow-hidden p-4 pt-3">
