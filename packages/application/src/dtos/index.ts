@@ -21,6 +21,12 @@ export interface RecordObservationCommand {
   pressureHpa: number;
   source: 'AUTOMATIC_STATION' | 'MANUAL' | 'API_PROVIDER' | 'RADAR';
   observedAt: Date;
+  /**
+   * When set, this is a forecast observation.
+   * forecastFor is the future time the metrics are predicted for.
+   * The domain will apply a severity discount and a "Prognoza" title prefix.
+   */
+  forecastFor?: Date;
 }
 
 export interface GetActiveAlertsQuery {
@@ -68,5 +74,9 @@ export function toAlertDto(alert: WeatherAlert): AlertDto {
     issuedAt: alert.issuedAt.toISOString(),
     validUntil: alert.validUntil.toISOString(),
     severityColor: alert.severity.color,
+    isForecasted: alert.isForecasted,
+    // Use spread to satisfy exactOptionalPropertyTypes — only include forecastFor
+    // when it actually has a value, not when it is undefined
+    ...(alert.forecastFor ? { forecastFor: alert.forecastFor.toISOString() } : {}),
   };
 }

@@ -55,10 +55,20 @@ export function AlertList() {
     );
   }
 
+  // Sort: observed alerts first (by severity), then forecast alerts (by forecastFor date)
   const sorted = [...alerts].sort((a, b) => {
-    const ai = SEVERITY_ORDER.indexOf(a.severity);
-    const bi = SEVERITY_ORDER.indexOf(b.severity);
-    if (ai !== bi) return ai - bi;
+    // Observed always before forecast
+    if (a.isForecasted !== b.isForecasted) return a.isForecasted ? 1 : -1;
+    // Within observed: by severity
+    if (!a.isForecasted) {
+      const ai = SEVERITY_ORDER.indexOf(a.severity);
+      const bi = SEVERITY_ORDER.indexOf(b.severity);
+      if (ai !== bi) return ai - bi;
+    }
+    // Within forecast: by forecastFor date (soonest first)
+    if (a.isForecasted && a.forecastFor && b.forecastFor) {
+      return new Date(a.forecastFor).getTime() - new Date(b.forecastFor).getTime();
+    }
     return new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime();
   });
 
@@ -90,9 +100,26 @@ export function AlertList() {
           Nema rezultata za &ldquo;{query}&rdquo;
         </p>
       ) : (
-        filtered.map((alert) => (
-          <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />
-        ))
+        <>
+          {/* Current (observed) alerts */}
+          {filtered.filter((a) => !a.isForecasted).map((alert) => (
+            <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />
+          ))}
+
+          {/* Divider between observed and forecast sections */}
+          {filtered.some((a) => !a.isForecasted) && filtered.some((a) => a.isForecasted) && (
+            <div className="flex items-center gap-2 pt-1">
+              <div className="h-px flex-1 bg-slate-100" />
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Prognoza</span>
+              <div className="h-px flex-1 bg-slate-100" />
+            </div>
+          )}
+
+          {/* Forecast alerts */}
+          {filtered.filter((a) => a.isForecasted).map((alert) => (
+            <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />
+          ))}
+        </>
       )}
     </div>
   );

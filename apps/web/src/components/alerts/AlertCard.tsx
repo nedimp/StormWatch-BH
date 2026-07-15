@@ -59,6 +59,13 @@ export function AlertCard({ alert, onResolve }: AlertCardProps) {
             <Icon size={16} style={{ color: alert.severityColor }} strokeWidth={2} />
           </div>
           <div className="min-w-0">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              {alert.isForecasted && alert.forecastFor && (
+                <span className="rounded px-1.5 py-0.5 text-[9px] font-black bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
+                  PROGNOZA · {new Date(alert.forecastFor).toLocaleDateString('bs-BA', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}
+                </span>
+              )}
+            </div>
             <p className="text-xs font-bold leading-snug text-slate-800">{alert.title}</p>
             <p className="text-[11px] text-slate-400 mt-0.5">{alert.regionName}</p>
           </div>

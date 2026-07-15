@@ -19,6 +19,14 @@ export interface WeatherAlertProps {
   validUntil: Date;
   status: AlertStatus;
   observationIds: string[];
+  /**
+   * When set, this alert is based on forecast data, not observed conditions.
+   * forecastFor is the predicted time when the severe weather will occur.
+   * isForecasted: true enables lower visual urgency in the UI and a
+   * "Prognoza" prefix on the title.
+   */
+  forecastFor?: Date;
+  isForecasted: boolean;
 }
 
 /**
@@ -41,6 +49,10 @@ export class WeatherAlert extends AggregateRoot<string> {
     if (!props.title.trim()) return err('Alert title cannot be empty');
     if (props.validUntil <= props.issuedAt) return err('validUntil must be after issuedAt');
     if (props.affectedArea.length < 3) return err('Affected area needs at least 3 coordinates');
+    // Forecast alerts must reference a future time
+    if (props.isForecasted && props.forecastFor && props.forecastFor <= props.issuedAt) {
+      return err('forecastFor must be after issuedAt for forecast alerts');
+    }
 
     const alert = new WeatherAlert(id, { ...props, status: 'ACTIVE' });
     alert.addDomainEvent(
@@ -112,6 +124,9 @@ export class WeatherAlert extends AggregateRoot<string> {
   get observationIds(): ReadonlyArray<string> {
     return this.props.observationIds;
   }
+
+  get isForecasted(): boolean { return this.props.isForecasted; }
+  get forecastFor(): Date | undefined { return this.props.forecastFor; }
 
   isActive(): boolean {
     return this.props.status === 'ACTIVE' || this.props.status === 'ESCALATED';

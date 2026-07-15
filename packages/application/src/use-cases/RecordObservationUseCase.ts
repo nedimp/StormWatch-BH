@@ -76,30 +76,47 @@ export class RecordObservationUseCase {
     }
     observation.clearDomainEvents();
 
-    // Assess for alert
-    const assessment = this.deps.alertDomainService.assessObservation(metricsResult.value);
+    // Assess for alert.
+    // If forecastFor is set, use assessForecast() which applies a severity
+    // discount and adds Bosnian lead-time language ("Prognoza (sutra): ...").
+    // Otherwise use the standard assessObservation() for current conditions.
+    const leadHours = cmd.forecastFor
+      ? Math.round((cmd.forecastFor.getTime() - Date.now()) / 3_600_000)
+      : 0;
+    const assessment = cmd.forecastFor
+      ? this.deps.alertDomainService.assessForecast(metricsResult.value, leadHours)
+      : this.deps.alertDomainService.assessObservation(metricsResult.value);
+
     if (!assessment.shouldAlert) {
-      // Check if existing active alert for this region can now be resolved
-      const activeAlerts = await this.deps.alertRepository.findActiveByRegion(cmd.regionId);
-      for (const alert of activeAlerts) {
-        if (this.deps.alertDomainService.canResolve(metricsResult.value)) {
-          const resolveResult = alert.resolve(new Date());
-          if (resolveResult.ok) {
-            await this.deps.alertRepository.save(alert);
-            for (const event of alert.domainEvents) {
-              await this.deps.eventBus.publish(event.eventName, event);
+      // Observation is below threshold. Check if an existing OBSERVED alert
+      // for this region can now be resolved (conditions have improved).
+      // We intentionally do NOT auto-resolve forecast alerts here — they
+      // represent future predictions and should expire naturally.
+      if (!cmd.forecastFor) {
+        const activeAlerts = await this.deps.alertRepository.findActiveByRegion(cmd.regionId);
+        for (const alert of activeAlerts) {
+          if (!alert.isForecasted && this.deps.alertDomainService.canResolve(metricsResult.value)) {
+            const resolveResult = alert.resolve(new Date());
+            if (resolveResult.ok) {
+              await this.deps.alertRepository.save(alert);
+              for (const event of alert.domainEvents) {
+                await this.deps.eventBus.publish(event.eventName, event);
+              }
+              alert.clearDomainEvents();
             }
-            alert.clearDomainEvents();
           }
         }
       }
       return { alertCreated: null };
     }
 
-    // Check if there's already an active alert for this region + condition
+    // Check if there's already an active alert for this region + condition.
+    // For forecast alerts: match on condition type AND whether the existing alert
+    // is also a forecast (to avoid conflating observed vs forecast alerts).
     const existingAlerts = await this.deps.alertRepository.findActiveByRegion(cmd.regionId);
     const sameTypeAlert = existingAlerts.find(
-      (a) => a.condition.type === assessment.condition.type,
+      (a) => a.condition.type === assessment.condition.type
+          && a.isForecasted === !!cmd.forecastFor,
     );
 
     if (sameTypeAlert) {
@@ -120,9 +137,12 @@ export class RecordObservationUseCase {
       return { alertCreated: toAlertDto(sameTypeAlert) };
     }
 
-    // Create new alert
-    const validUntil = new Date(cmd.observedAt);
-    validUntil.setHours(validUntil.getHours() + 6); // Default 6h validity
+    // Create new alert.
+    // Forecast alerts are valid until the forecast period ends (forecastFor + 6h).
+    // Observed alerts are valid for 6h from the observation time.
+    const validUntil = cmd.forecastFor
+      ? new Date(cmd.forecastFor.getTime() + 6 * 3_600_000)
+      : new Date(cmd.observedAt.getTime() + 6 * 3_600_000);
 
     const alertResult = WeatherAlert.create(this.deps.idGenerator.generate(), {
       regionId: cmd.regionId,
@@ -136,6 +156,9 @@ export class RecordObservationUseCase {
       issuedAt: cmd.observedAt,
       validUntil,
       observationIds: [observation.id],
+      isForecasted: !!cmd.forecastFor,
+      // exactOptionalPropertyTypes: only spread forecastFor when it has a value
+      ...(cmd.forecastFor ? { forecastFor: cmd.forecastFor } : {}),
     });
 
     if (!alertResult.ok) throw new Error(alertResult.error);

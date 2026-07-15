@@ -39,6 +39,9 @@ export type BiHEntity = 'FBiH' | 'RS' | 'BD';
 /**
  * A weather alert as returned by GET /api/v1/alerts.
  * All dates are ISO 8601 strings.
+ *
+ * isForecasted: true  → alert is based on forecast data (a few days ahead)
+ * isForecasted: false → alert is based on currently observed conditions
  */
 export interface AlertDto {
   id: string;
@@ -53,6 +56,10 @@ export interface AlertDto {
   issuedAt: string;
   validUntil: string;
   severityColor: string;
+  /** True when this alert is a forecast (predicted), not an observation. */
+  isForecasted: boolean;
+  /** ISO 8601 — when the severe weather is expected to occur (forecast only). */
+  forecastFor?: string;
 }
 
 /**

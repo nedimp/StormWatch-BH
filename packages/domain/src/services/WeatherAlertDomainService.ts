@@ -164,6 +164,101 @@ export class WeatherAlertDomainService {
     return !assessment.shouldAlert;
   }
 
+  /**
+   * Assess forecast metrics and return an advisory recommendation.
+   *
+   * Key differences from assessObservation():
+   * 1. Severity is discounted by one level to reflect forecast uncertainty
+   *    (e.g. a CRITICAL observed condition → HIGH forecast advisory).
+   *    LOW assessments are skipped entirely — minor forecasts aren't actionable.
+   * 2. The title gets a lead-time prefix in Bosnian
+   *    (e.g. "Prognoza (sutra): Jak vjetar").
+   * 3. Recommendations include uncertainty language
+   *    ("Pratite prognozu, situacija se može promijeniti").
+   *
+   * @param metrics   The worst forecast metrics for a future time block
+   * @param leadHours Hours from now until the forecast period begins
+   */
+  assessForecast(metrics: WeatherMetrics, leadHours: number): AlertAssessment {
+    // Run the same threshold checks as for observed conditions
+    const observed = this.assessObservation(metrics);
+
+    if (!observed.shouldAlert) {
+      return observed; // below threshold even without discounting
+    }
+
+    // Discount severity by one level to represent forecast uncertainty.
+    // LOW forecast → not worth alerting (skip). MEDIUM/HIGH/CRITICAL → downgrade.
+    const discounted = this.discountSeverity(observed.severity.level);
+    if (!discounted) {
+      // LOW severity forecast — informational only, not worth a dashboard alert
+      return {
+        shouldAlert: false,
+        severity: AlertSeverity.low(),
+        condition: observed.condition,
+        title: '',
+        description: '',
+        recommendations: [],
+      };
+    }
+
+    // Build a human-readable lead-time label in Bosnian
+    const leadLabel = this.buildLeadLabel(leadHours);
+
+    // Prefix the original title with the forecast indicator
+    const forecastTitle = `Prognoza (${leadLabel}): ${observed.condition.localizedName}`;
+
+    // Add forecast-specific recommendation as the first item
+    const forecastRec = 'Pratite prognozu — situacija se može promijeniti u narednih 24h.';
+
+    const severity = AlertSeverity.create(discounted);
+    return {
+      shouldAlert: true,
+      severity: severity.ok ? severity.value : AlertSeverity.low(),
+      condition: observed.condition,
+      title: forecastTitle,
+      description: `${leadLabel.charAt(0).toUpperCase() + leadLabel.slice(1)}: ${observed.description}`,
+      recommendations: [forecastRec, ...observed.recommendations],
+    };
+  }
+
+  /**
+   * Discount a severity level by one step to reflect forecast uncertainty.
+   * Returns null if the result would be below the minimum alertable level (LOW).
+   *
+   * CRITICAL → HIGH
+   * HIGH     → MEDIUM
+   * MEDIUM   → LOW
+   * LOW      → null (skip, not actionable as a forecast)
+   */
+  private discountSeverity(level: AlertSeverityLevel): AlertSeverityLevel | null {
+    switch (level) {
+      case AlertSeverityLevel.CRITICAL: return AlertSeverityLevel.HIGH;
+      case AlertSeverityLevel.HIGH:     return AlertSeverityLevel.MEDIUM;
+      case AlertSeverityLevel.MEDIUM:   return AlertSeverityLevel.LOW;
+      case AlertSeverityLevel.LOW:      return null;
+    }
+  }
+
+  /**
+   * Build a human-readable Bosnian lead-time label.
+   *
+   * Examples:
+   *   6h  → "danas"
+   *   18h → "danas kasno"
+   *   24h → "sutra"
+   *   48h → "prekosutra"
+   *   72h → "za 3 dana"
+   */
+  private buildLeadLabel(leadHours: number): string {
+    if (leadHours <= 12)  return 'danas';
+    if (leadHours <= 24)  return 'danas kasno';
+    if (leadHours <= 36)  return 'sutra';
+    if (leadHours <= 60)  return 'prekosutra';
+    const days = Math.round(leadHours / 24);
+    return `za ${days} dana`;
+  }
+
   private buildAssessment(
     level: AlertSeverityLevel,
     condType: WeatherConditionType,

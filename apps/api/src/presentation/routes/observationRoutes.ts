@@ -16,6 +16,8 @@ const observationBodySchema = z.object({
   pressureHpa: z.number().min(800).max(1100),
   source: z.enum(['AUTOMATIC_STATION', 'MANUAL', 'API_PROVIDER', 'RADAR']),
   observedAt: z.coerce.date(),
+  /** Optional: when set, this is a forecast observation for a future time. */
+  forecastFor: z.coerce.date().optional(),
 });
 
 export async function observationRoutes(app: FastifyInstance): Promise<void> {
