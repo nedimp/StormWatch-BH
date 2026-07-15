@@ -56,6 +56,9 @@ importers:
       '@stormwatch/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@stormwatch/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@types/nodemailer':
         specifier: ^8.0.1
         version: 8.0.1
@@ -148,6 +151,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@stormwatch/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@tanstack/react-query':
         specifier: ^5.28.4
         version: 5.101.2(react@18.3.1)
@@ -209,6 +215,9 @@ importers:
       '@stormwatch/domain':
         specifier: workspace:*
         version: link:../domain
+      '@stormwatch/shared':
+        specifier: workspace:*
+        version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.4.0
@@ -231,6 +240,12 @@ importers:
       vitest:
         specifier: ^1.4.0
         version: 1.6.1(@types/node@20.19.43)
+
+  packages/shared:
+    devDependencies:
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
 
 packages:
 

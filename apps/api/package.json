@@ -26,6 +26,7 @@
     "@fastify/websocket": "^8.3.1",
     "@stormwatch/application": "workspace:*",
     "@stormwatch/domain": "workspace:*",
+    "@stormwatch/shared": "workspace:*",
     "@types/nodemailer": "^8.0.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.5",

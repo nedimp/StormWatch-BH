@@ -21,7 +21,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@stormwatch/domain": "workspace:*"
+    "@stormwatch/domain": "workspace:*",
+    "@stormwatch/shared": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.4.0",

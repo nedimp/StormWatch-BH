@@ -1,6 +1,9 @@
 import type { WeatherAlert } from '@stormwatch/domain';
 import type { AlertSeverityLevel } from '@stormwatch/domain';
-import type { WeatherConditionType } from '@stormwatch/domain';
+import type { AlertDto } from '@stormwatch/shared';
+
+// Re-export AlertDto so existing application-layer consumers don't need to change their import path
+export type { AlertDto } from '@stormwatch/shared';
 
 // ── Inbound DTOs (commands) ──────────────────────────────────────────────────
 
@@ -33,21 +36,7 @@ export interface ResolveAlertCommand {
 }
 
 // ── Outbound DTOs (views) ────────────────────────────────────────────────────
-
-export interface AlertDto {
-  id: string;
-  regionId: string;
-  regionName: string;
-  severity: AlertSeverityLevel;
-  condition: WeatherConditionType;
-  title: string;
-  description: string;
-  recommendations: string[];
-  status: string;
-  issuedAt: string;
-  validUntil: string;
-  severityColor: string;
-}
+// AlertDto is defined in @stormwatch/shared and re-exported above.
 
 export interface ObservationDto {
   id: string;
