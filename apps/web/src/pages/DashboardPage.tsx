@@ -32,14 +32,14 @@ export function DashboardPage() {
 
   // Memoised so the array reference is stable — avoids unnecessary re-renders of tab buttons
   const observedAlertCount = useMemo(() => alerts.filter((a) => !a.isForecasted).length, [alerts]);
-  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] =
+  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number | undefined }[] =
     useMemo(
       () => [
         {
           id: 'alerts',
           label: 'Upozorenja',
-          Icon: Activity,
-          count: observedAlertCount || undefined,
+          Icon: Activity as ElementType,
+          ...(observedAlertCount ? { count: observedAlertCount } : {}),
         },
         { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
         { id: 'map', label: 'Karta', Icon: MapIcon },

@@ -15,5 +15,6 @@ export interface IWeatherObservationRepository {
   findByStation(stationId: string, limit?: number): Promise<WeatherObservation[]>;
   findByRegion(regionId: string, since: Date): Promise<WeatherObservation[]>;
   findLatestByStation(stationId: string): Promise<WeatherObservation | null>;
+  findAllLatestPerStation(): Promise<WeatherObservation[]>;
   save(observation: WeatherObservation): Promise<void>;
 }

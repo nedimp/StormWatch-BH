@@ -25,7 +25,7 @@ import { logger } from './infrastructure/logger.js';
  *   When provided, DB migrations are skipped so tests run without a real DB.
  */
 export async function buildApp(testContainer?: AppContainer): Promise<ReturnType<typeof Fastify>> {
-  const app = Fastify({ logger: testContainer ? false : logger });
+  const app = Fastify({ logger: testContainer ? false : (logger as unknown as import('fastify').FastifyBaseLogger) });
 
   // ── Security ─────────────────────────────────────────────────────────────
   await app.register(helmet, { contentSecurityPolicy: false });
@@ -84,7 +84,7 @@ export async function buildApp(testContainer?: AppContainer): Promise<ReturnType
   if (staticPath && existsSync(staticPath)) {
     await app.register(staticFiles, { root: staticPath, prefix: '/' });
     app.setNotFoundHandler((req, reply) => {
-      const url = req.url.split('?')[0];
+      const url = req.url.split('?')[0] ?? req.url;
       if (
         url.startsWith('/assets/') ||
         url.startsWith('/api/') ||

@@ -96,7 +96,7 @@ export function CurrentConditionsPanel() {
               <StationRow
                 key={obs.stationId}
                 obs={obs}
-                alert={alert}
+                {...(alert ? { alert } : {})}
                 isNearest={obs.stationId === nearestId}
               />
             );

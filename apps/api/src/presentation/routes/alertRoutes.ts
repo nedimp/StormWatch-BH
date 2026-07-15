@@ -51,7 +51,12 @@ export async function alertRoutes(app: FastifyInstance): Promise<void> {
           .send({ error: 'Invalid query parameters', details: parsed.error.flatten() });
       }
 
-      const query: GetActiveAlertsQuery = parsed.data;
+      const { regionId, severity, limit } = parsed.data;
+      const query: GetActiveAlertsQuery = {
+        ...(regionId !== undefined ? { regionId } : {}),
+        ...(severity !== undefined ? { severity } : {}),
+        ...(limit !== undefined ? { limit } : {}),
+      };
       const useCase = app.container.getActiveAlertsUseCase;
       const alerts = await useCase.execute(query);
 

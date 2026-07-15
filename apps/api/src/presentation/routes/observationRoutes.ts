@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { STATION_NAMES } from '../../infrastructure/data/stationNames.js';
+import type { RecordObservationCommand } from '@stormwatch/application';
 
 const observationBodySchema = z.object({
   stationId: z.string().min(1),
@@ -81,7 +82,12 @@ export async function observationRoutes(app: FastifyInstance): Promise<void> {
           .send({ error: 'Validation failed', details: parsed.error.flatten() });
       }
       const useCase = app.container.recordObservationUseCase;
-      const result = await useCase.execute(parsed.data);
+      const { forecastFor, ...rest } = parsed.data;
+      const command: RecordObservationCommand = {
+        ...rest,
+        ...(forecastFor !== undefined ? { forecastFor } : {}),
+      };
+      const result = await useCase.execute(command);
       return reply.code(201).send({
         data: result,
         message: result.alertCreated

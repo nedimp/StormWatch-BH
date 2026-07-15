@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 interface StationRowProps {
   obs: CurrentConditionDto;
   /** The active alert for this station's region, if any. */
-  alert?: AlertDto;
+  alert?: AlertDto | undefined;
   isNearest?: boolean;
 }
 
