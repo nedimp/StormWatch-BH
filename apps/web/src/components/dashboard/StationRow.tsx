@@ -107,7 +107,7 @@ export function StationRow({ obs, alert, isNearest }: StationRowProps) {
           )}
           <p className="text-[9px] text-slate-300 mt-1.5">
             {alert.isForecasted && alert.forecastFor
-              ? `Prognoza za ${new Date(alert.forecastFor).toLocaleDateString('bs-BA', { weekday: 'long', day: 'numeric', month: 'short' })}`
+              ? `Prognoza za ${new Date(alert.forecastFor).toLocaleDateString('de-DE')}`  /* de-DE gives dd.mm.yyyy */
               : `Izdano ${formatDistanceToNow(new Date(alert.issuedAt), { addSuffix: true })}`}
           </p>
         </div>

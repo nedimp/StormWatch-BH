@@ -61,7 +61,7 @@ export function AlertCard({ alert }: AlertCardProps) {
             <div className="flex items-center gap-1.5 mb-0.5">
               {alert.isForecasted && alert.forecastFor && (
                 <span className="rounded px-1.5 py-0.5 text-[9px] font-black bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
-                  PROGNOZA · {new Date(alert.forecastFor).toLocaleDateString('bs-BA', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}
+                  PROGNOZA · {new Date(alert.forecastFor).toLocaleDateString('de-DE')}  {/* de-DE gives dd.mm.yyyy */}
                 </span>
               )}
             </div>
