@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState } from 'react';
-import { Activity } from 'lucide-react';
+import type { ElementType } from 'react';
+import { Activity, Thermometer, Map as MapIcon } from 'lucide-react';
 import { SEVERITY_COLORS, SEVERITY_LABELS, SEVERITY_ORDER } from '../constants/severity';
 import { TopNav } from '../components/shared/TopNav';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
@@ -13,32 +14,64 @@ const WeatherMap = lazy(() =>
 );
 
 type Tab = 'alerts' | 'conditions';
+type DesktopTab = 'alerts' | 'conditions' | 'map';
 
 export function DashboardPage() {
   useWeatherSocket();
-  const [activeTab, setActiveTab] = useState<Tab>('alerts');
+  const [activeTab, setActiveTab] = useState<Tab>('alerts');          // mobile
   const [mobileView, setMobileView] = useState<'map' | Tab>('conditions');
-  const [desktopView, setDesktopView] = useState<'list' | 'map'>('list');
+  const [desktopTab, setDesktopTab] = useState<DesktopTab>('alerts');  // desktop
   const alerts = useAlertStore((s) => s.alerts);
+
+  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] = [
+    { id: 'alerts',     label: 'Upozorenja',     Icon: Activity,    count: alerts.filter(a => !a.isForecasted).length || undefined },
+    { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
+    { id: 'map',        label: 'Karta',           Icon: MapIcon },
+  ];
 
   return (
     <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
-      {/* ── Desktop nav (with Karta/Lista toggle) ── */}
-      <TopNav
-        page="dashboard"
-        desktopView={desktopView}
-        onToggleDesktopView={() => setDesktopView((v) => v === 'list' ? 'map' : 'list')}
-      />
+      {/* ── Desktop nav (Karta toggle now handled by tabs, so no extra props) ── */}
+      <TopNav page="dashboard" />
 
-      {/* ── DESKTOP layout (md+): stations list + alerts sidebar ── */}
-      <main className="hidden md:flex flex-1 overflow-hidden pt-16">
-        {/* Left panel: stations list OR framed map with legend */}
-        <div className="flex-1 overflow-hidden border-r border-slate-200">
-          {desktopView === 'list' ? (
-            <CurrentConditionsPanel />
-          ) : (
+      {/* ── DESKTOP layout (md+): full-width tabbed panel ── */}
+      <main className="hidden md:flex flex-col flex-1 overflow-hidden pt-16">
+        {/* Tab bar */}
+        <div className="flex items-center gap-1 px-6 border-b border-slate-200 shrink-0 bg-white">
+          {desktopTabs.map(({ id, label, Icon, count }) => (
+            <button
+              key={id}
+              onClick={() => setDesktopTab(id)}
+              className={
+                'flex items-center gap-1.5 px-4 py-3 text-sm font-semibold border-b-2 transition ' +
+                (desktopTab === id
+                  ? 'border-slate-900 text-slate-900'
+                  : 'border-transparent text-slate-400 hover:text-slate-600')
+              }
+            >
+              <Icon size={14} />
+              {label}
+              {count != null && count > 0 && (
+                <span className="rounded-full bg-blue-600 px-1.5 py-0.5 text-[9px] font-black text-white leading-none">
+                  {count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content — max-width centered for readability */}
+        <div className="flex-1 overflow-hidden">
+          {desktopTab === 'alerts' && (
+            <div className="h-full overflow-y-auto">
+              <div className="mx-auto max-w-2xl px-6 py-4">
+                <AlertList />
+              </div>
+            </div>
+          )}
+          {desktopTab === 'conditions' && <CurrentConditionsPanel />}
+          {desktopTab === 'map' && (
             <div className="flex flex-col h-full overflow-y-auto">
-              {/* Framed map — matches mobile 55vh pattern */}
               <div className="relative shrink-0" style={{ height: '60vh', minHeight: 320 }}>
                 <Suspense fallback={
                   <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
@@ -46,10 +79,9 @@ export function DashboardPage() {
                   <WeatherMap />
                 </Suspense>
               </div>
-              {/* Severity legend */}
               <div className="p-5 border-t border-slate-100 bg-white">
                 <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Legenda upozorenja</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-4 gap-3">
                   {SEVERITY_ORDER.map((sev) => (
                     <div key={sev} className="flex items-center gap-2">
                       <span className="shrink-0 h-4 w-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: SEVERITY_COLORS[sev] }} />
@@ -62,23 +94,8 @@ export function DashboardPage() {
             </div>
           )}
         </div>
-
-        {/* Alerts sidebar */}
-        <aside className="w-[360px] shrink-0 flex flex-col overflow-hidden bg-white">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 shrink-0">
-            <Activity size={14} className="text-slate-400" />
-            <span className="text-sm font-semibold text-slate-700">Upozorenja</span>
-            {alerts.length > 0 && (
-              <span className="ml-auto rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">
-                {alerts.length}
-              </span>
-            )}
-          </div>
-          <div className="flex-1 overflow-y-auto p-3">
-            <AlertList />
-          </div>
-        </aside>
       </main>
+
 
       {/* ── MOBILE layout (<md) ── */}
       <div className="flex md:hidden flex-col flex-1 overflow-hidden">
