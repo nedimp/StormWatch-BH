@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useLiveAlerts } from '../../hooks/useLiveAlerts';
+import { SEVERITY_BADGE_LABELS } from '../../constants/severity';
 
 /**
  * Landing page alert banner.
@@ -72,7 +73,7 @@ export function LiveAlertBanner() {
                     className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-black text-white"
                     style={{ backgroundColor: alert.severityColor }}
                   >
-                    {alert.severity}
+                    {SEVERITY_BADGE_LABELS[alert.severity]}
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-0.5">{alert.regionName}</p>
