@@ -76,6 +76,8 @@ function buildTestContainer(): AppContainer {
 let app: FastifyInstance;
 
 beforeAll(async () => {
+  // Set a known secret so the auth check passes in route tests
+  process.env['WORKER_SECRET'] = 'test-secret';
   app = await buildApp(buildTestContainer());
   await app.ready();
 });
@@ -142,10 +144,26 @@ describe('POST /api/v1/observations', () => {
     observedAt: new Date().toISOString(),
   };
 
-  it('returns 201 for a valid observation', async () => {
+  const AUTH = { 'x-worker-token': process.env['WORKER_SECRET'] ?? 'test-secret' };
+
+  it('returns 401 when X-Worker-Token is missing', async () => {
+    const res = await app.inject({ method: 'POST', url: '/api/v1/observations', payload: validObservation });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('returns 401 when X-Worker-Token is wrong', async () => {
     const res = await app.inject({
-      method: 'POST',
-      url: '/api/v1/observations',
+      method: 'POST', url: '/api/v1/observations',
+      headers: { 'x-worker-token': 'wrong-secret' },
+      payload: validObservation,
+    });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('returns 201 for a valid observation with correct token', async () => {
+    const res = await app.inject({
+      method: 'POST', url: '/api/v1/observations',
+      headers: AUTH,
       payload: validObservation,
     });
     expect(res.statusCode).toBe(201);
@@ -153,8 +171,8 @@ describe('POST /api/v1/observations', () => {
 
   it('no alert for calm conditions', async () => {
     const res = await app.inject({
-      method: 'POST',
-      url: '/api/v1/observations',
+      method: 'POST', url: '/api/v1/observations',
+      headers: AUTH,
       payload: validObservation,
     });
     expect(res.json().data.alertCreated).toBeNull();
@@ -162,19 +180,18 @@ describe('POST /api/v1/observations', () => {
 
   it('creates alert for extreme wind', async () => {
     const res = await app.inject({
-      method: 'POST',
-      url: '/api/v1/observations',
+      method: 'POST', url: '/api/v1/observations',
+      headers: AUTH,
       payload: { ...validObservation, windSpeedKmh: 95, windGustKmh: 130 },
     });
     expect(res.statusCode).toBe(201);
-    expect(res.json().data.alertCreated).not.toBeNull();
     expect(res.json().data.alertCreated.severity).toBe('CRITICAL');
   });
 
   it('returns 400 for invalid payload', async () => {
     const res = await app.inject({
-      method: 'POST',
-      url: '/api/v1/observations',
+      method: 'POST', url: '/api/v1/observations',
+      headers: AUTH,
       payload: { stationId: 'only-id' },
     });
     expect(res.statusCode).toBe(400);

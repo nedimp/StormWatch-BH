@@ -14,7 +14,12 @@ export class ApiObservationSubmitter {
   async submitObservation(cmd: RecordObservationCommand): Promise<void> {
     const response = await fetch(`${this.apiBaseUrl}/api/v1/observations`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        // Shared secret that authenticates the worker to the API.
+        // Must match WORKER_SECRET in apps/api/.env
+        'X-Worker-Token': process.env['WORKER_SECRET'] ?? '',
+      },
       body: JSON.stringify({
         ...cmd,
         observedAt: cmd.observedAt.toISOString(),

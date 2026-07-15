@@ -57,15 +57,23 @@ export async function observationRoutes(app: FastifyInstance): Promise<void> {
   );
 
   // POST /api/v1/observations
+  // Protected by X-Worker-Token — only the weather-worker should call this.
   app.post(
     '/',
     {
       schema: {
         tags: ['observations'],
         summary: 'Record a weather observation',
+        security: [{ workerToken: [] }],
       },
     },
     async (request, reply) => {
+      // Verify shared secret between API and weather-worker
+      const token = request.headers['x-worker-token'];
+      const expected = process.env['WORKER_SECRET'];
+      if (!expected || token !== expected) {
+        return reply.code(401).send({ error: 'Unauthorized — missing or invalid X-Worker-Token' });
+      }
       const parsed = observationBodySchema.safeParse(request.body);
       if (!parsed.success) {
         return reply
