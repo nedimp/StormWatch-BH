@@ -19,5 +19,13 @@
     "@typescript-eslint/no-floating-promises": "error",
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }]
   },
-  "ignorePatterns": ["dist/", "node_modules/", "*.js", "*.cjs", "**/*.test.ts", "**/*.spec.ts"]
+  "ignorePatterns": ["dist/", "node_modules/", "*.js", "*.cjs", "**/*.test.ts", "**/*.spec.ts"],
+  "overrides": [
+    {
+      "files": ["apps/api/src/presentation/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/require-await": "off"
+      }
+    }
+  ]
 }
