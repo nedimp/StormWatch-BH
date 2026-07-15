@@ -141,11 +141,11 @@ ACTIVE → ESCALATED (severity rises) → RESOLVED (conditions clear) | EXPIRED 
 | Swagger/OpenAPI docs | ✅ |
 | Mobile responsive (safe-area, bottom nav, dvh) | ✅ |
 | Rate limiting, Helmet, CORS | ✅ |
-| Domain tests | ✅ 30/30 |
-| Application / API / frontend tests | ✅ 96 tests |
+| Domain tests | ✅ 36/36 |
+| Application / API / frontend tests | ✅ 98 tests total |
 | HTTPS | ❌ HTTP only (DNS not configured for subdomain) |
 | Alert persistence in PostgreSQL | ❌ In-memory (alerts are transient by design) |
-| Authentication on POST /observations | ❌ Open endpoint |
+| Authentication on POST /observations | ✅ X-Worker-Token shared secret |
 
 ---
 
@@ -162,7 +162,7 @@ packages/application/src/__tests__/
 
 apps/api/src/__tests__/
   GmailNotificationService.test.ts  (14 tests) — welcome email, alert emails, forecast emails, empty list
-  routes.test.ts                    (11 tests) — all HTTP routes via Fastify inject() (no real DB/network)
+  routes.test.ts                    (13 tests) — all HTTP routes via Fastify inject() (no real DB/network)
 
 apps/weather-worker/src/__tests__/
   OpenMeteoAdapter.test.ts          (10 tests) — current + batch + forecast adapter with mocked fetch
@@ -171,7 +171,7 @@ apps/web/src/__tests__/
   components.test.tsx               (14 tests) — AlertCard, StationRow render + toggle interaction
 ```
 
-Run all 96 tests locally:
+Run all 98 tests locally:
 ```bash
 pnpm -r test
 ```
@@ -280,11 +280,9 @@ This triggers a **CRITICAL – Olujni vjetar** alert and broadcasts it via WebSo
 
 3. **Alerts are in-memory** — `InMemoryAlertRepository` means active alerts are lost on API restart. Acceptable for MVP; a `DrizzleAlertRepository` would be the natural next step.
 
-4. **POST /observations is open** — No API key auth on the weather observation ingestion endpoint. Anyone can submit fake data. Fix: add `X-Worker-Token` header validation.
+4. **Test coverage gaps** — weather-worker adapter tests aren't included in `test:coverage` CI output (worker has no `@vitest/coverage-v8` dev-dep). Coverage reporting is best-effort.
 
-5. **Test coverage is domain-only** — Application use cases, API routes, and the frontend have zero automated tests.
-
-6. **Summer thresholds won't trigger naturally** — Extreme heat threshold is 40°C (FHMZ standard). BiH summer temps (~30-34°C) won't trigger alerts. Use the `curl` above to demo.
+5. **Summer thresholds won't trigger naturally** — Extreme heat threshold is 40°C (FHMZ standard). BiH summer temps (~30-34°C) won't trigger alerts. Use the `curl` above to demo.
 
 ---
 
