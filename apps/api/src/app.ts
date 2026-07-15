@@ -14,11 +14,18 @@ import { healthRoutes } from './presentation/routes/healthRoutes.js';
 import { subscriptionRoutes } from './presentation/routes/subscriptionRoutes.js';
 import { websocketRoutes } from './presentation/websocket/weatherSocket.js';
 import { buildContainer } from './infrastructure/container.js';
+import type { AppContainer } from './infrastructure/container.js';
 import { migrate } from './infrastructure/database/migrate.js';
 import { logger } from './infrastructure/logger.js';
 
-export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
-  const app = Fastify({ logger });
+/**
+ * Build the Fastify application.
+ *
+ * @param testContainer  Optional DI container override for tests.
+ *   When provided, DB migrations are skipped so tests run without a real DB.
+ */
+export async function buildApp(testContainer?: AppContainer): Promise<ReturnType<typeof Fastify>> {
+  const app = Fastify({ logger: testContainer ? false : logger });
 
   // ── Security ─────────────────────────────────────────────────────────────
   await app.register(helmet, { contentSecurityPolicy: false });
@@ -49,16 +56,18 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   });
   await app.register(swaggerUi, { routePrefix: '/docs' });
 
-  // ── DB migrations ────────────────────────────────────────────────────────
-  try {
-    await migrate();
-  } catch (err) {
-    logger.error(err, 'Database migration failed');
-    throw err;
+  // ── DB migrations (skipped when a testContainer is injected) ────────────
+  if (!testContainer) {
+    try {
+      await migrate();
+    } catch (err) {
+      logger.error(err, 'Database migration failed');
+      throw err;
+    }
   }
 
   // ── DI Container ─────────────────────────────────────────────────────────
-  const container = buildContainer();
+  const container = testContainer ?? buildContainer();
   app.decorate('container', container);
 
   // ── Routes ───────────────────────────────────────────────────────────────
