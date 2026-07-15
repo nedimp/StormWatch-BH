@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { BIH_REGIONS } from '../../infrastructure/data/bihRegions.js';
 
-export function regionRoutes(app: FastifyInstance): void {
+export async function regionRoutes(app: FastifyInstance): Promise<void> {
   app.get(
     '/',
     {

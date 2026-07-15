@@ -6,7 +6,7 @@ const subscribeSchema = z.object({
   regions: z.array(z.string()).optional(),
 });
 
-export function subscriptionRoutes(app: FastifyInstance): void {
+export async function subscriptionRoutes(app: FastifyInstance): Promise<void> {
   // POST /api/v1/subscriptions — subscribe
   app.post(
     '/',
