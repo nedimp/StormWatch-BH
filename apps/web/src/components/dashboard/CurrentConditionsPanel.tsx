@@ -96,8 +96,7 @@ export function CurrentConditionsPanel() {
               <StationRow
                 key={obs.stationId}
                 obs={obs}
-                hasAlert={!!alert}
-                alertColor={alert?.severityColor}
+                alert={alert}
                 isNearest={obs.stationId === nearestId}
               />
             );
