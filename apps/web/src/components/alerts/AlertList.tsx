@@ -4,7 +4,7 @@ import { SEVERITY_ORDER } from '../../constants/severity';
 import { ALERTS_REFETCH_MS } from '../../constants/api';
 import { useAlertStore } from '../../store/alertStore';
 import { AlertCard } from './AlertCard';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { alertsApi } from '../../services/api';
 import type { AlertSeverity } from '../../types';
 
@@ -25,10 +25,6 @@ export function AlertList() {
     if (data?.data) setAlerts(data.data);
   }, [data, setAlerts]);
 
-  const resolveMutation = useMutation({
-    mutationFn: (id: string) => alertsApi.resolve(id, 'Manual resolve from dashboard'),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ['alerts'] }),
-  });
 
   if (isLoading) {
     return (
@@ -103,7 +99,7 @@ export function AlertList() {
         <>
           {/* Current (observed) alerts */}
           {filtered.filter((a) => !a.isForecasted).map((alert) => (
-            <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />
+            <AlertCard key={alert.id} alert={alert} />
           ))}
 
           {/* Divider between observed and forecast sections */}
@@ -117,7 +113,7 @@ export function AlertList() {
 
           {/* Forecast alerts */}
           {filtered.filter((a) => a.isForecasted).map((alert) => (
-            <AlertCard key={alert.id} alert={alert} onResolve={(id) => resolveMutation.mutate(id)} />
+            <AlertCard key={alert.id} alert={alert} />
           ))}
         </>
       )}

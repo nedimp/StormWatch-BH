@@ -16,7 +16,6 @@ import { SEVERITY_BADGE_LABELS } from '../../constants/severity';
 
 interface AlertCardProps {
   alert: AlertDto;
-  onResolve?: (id: string) => void;
 }
 
 const CONDITION_ICON: Record<string, React.ElementType> = {
@@ -31,7 +30,7 @@ const CONDITION_ICON: Record<string, React.ElementType> = {
   TORNADO_RISK: Wind,
 };
 
-export function AlertCard({ alert, onResolve }: AlertCardProps) {
+export function AlertCard({ alert }: AlertCardProps) {
   const timeAgo = formatDistanceToNow(new Date(alert.issuedAt), { addSuffix: true });
   const isCritical = alert.severity === 'CRITICAL';
   const isEscalated = alert.status === 'ESCALATED';
@@ -103,16 +102,8 @@ export function AlertCard({ alert, onResolve }: AlertCardProps) {
         </ul>
       )}
 
-      <div className="mt-3 flex items-center justify-between pl-2">
+      <div className="mt-3 pl-2">
         <span className="text-[11px] text-slate-400">{timeAgo}</span>
-        {onResolve && (
-          <button
-            onClick={() => onResolve(alert.id)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-500 transition hover:border-red-300 hover:text-red-500"
-          >
-            Označi riješenim
-          </button>
-        )}
       </div>
     </div>
   );
