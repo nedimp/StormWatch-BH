@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { CloudLightning, Home, ArrowRight, Bell, Activity } from 'lucide-react';
+import { CloudLightning, ArrowRight, Bell } from 'lucide-react';
 import { TopNav } from '../components/shared/TopNav';
 import { SubscribeSection } from '../components/landing/SubscribeSection';
 import { MobileLandingNav } from '../components/landing/MobileLandingNav';

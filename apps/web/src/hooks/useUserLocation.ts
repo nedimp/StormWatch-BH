@@ -46,16 +46,15 @@ export function useUserLocation(stations: CurrentConditionDto[]): UserLocationRe
     if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
-      async ({ coords }) => {
+      ({ coords }) => {
         const { latitude, longitude } = coords;
         setNearestId(nearestStation(stations, latitude, longitude));
-        const city = await reverseGeocode(latitude, longitude);
-        setCityName(city);
+        void reverseGeocode(latitude, longitude).then(setCityName);
       },
       () => { /* permission denied — silent */ },
       { timeout: GEOLOCATION_TIMEOUT_MS },
     );
-  }, [stations.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [stations.length]);
 
   return { cityName, nearestId };
 }

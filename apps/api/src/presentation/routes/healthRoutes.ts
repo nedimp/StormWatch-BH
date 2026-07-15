@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 
-export async function healthRoutes(app: FastifyInstance): Promise<void> {
+export function healthRoutes(app: FastifyInstance): void {
   app.get('/', async (_req, reply) => {
     return reply.code(200).send({
       status: 'ok',
