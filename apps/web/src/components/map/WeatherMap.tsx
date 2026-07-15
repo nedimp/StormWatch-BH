@@ -46,7 +46,7 @@ export function WeatherMap() {
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <MapContainer
         center={BIH_CENTER}
-        zoom={8}
+        zoom={7}
         className="h-full w-full"
         scrollWheelZoom={true}
         zoomControl={false}
