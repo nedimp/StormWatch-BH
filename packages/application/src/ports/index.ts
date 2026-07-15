@@ -18,11 +18,7 @@ export interface IAlertRepository {
  */
 export interface IWeatherDataProvider {
   fetchCurrentConditions(latitude: number, longitude: number): Promise<RawWeatherData>;
-  fetchForecast(
-    latitude: number,
-    longitude: number,
-    hoursAhead: number,
-  ): Promise<RawWeatherForecast[]>;
+  fetchBatch(stations: Array<{ id: string; lat: number; lng: number }>): Promise<Map<string, RawWeatherData>>;
 }
 
 export interface RawWeatherData {
@@ -34,10 +30,6 @@ export interface RawWeatherData {
   visibilityKm: number;
   pressureHpa: number;
   fetchedAt: Date;
-}
-
-export interface RawWeatherForecast extends RawWeatherData {
-  forecastFor: Date;
 }
 
 /**
