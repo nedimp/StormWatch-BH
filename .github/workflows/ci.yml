@@ -40,6 +40,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # Build shared packages so test runners can resolve imports from dist/
       - run: pnpm --filter @stormwatch/domain build
+      - run: pnpm --filter @stormwatch/application build
       - run: pnpm test:coverage
       - uses: actions/upload-artifact@v4
         with:

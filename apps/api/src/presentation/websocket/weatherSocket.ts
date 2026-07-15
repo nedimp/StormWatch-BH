@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { SocketStream } from '@fastify/websocket';
 
-export function websocketRoutes(app: FastifyInstance): void {
+export async function websocketRoutes(app: FastifyInstance): Promise<void> {
   app.get(
     '/alerts',
     { websocket: true },
