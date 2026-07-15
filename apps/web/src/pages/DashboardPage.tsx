@@ -25,7 +25,6 @@ const MAP_FRAME_HEIGHT_MOBILE = { height: '55vh', minHeight: 280 } as const;
 
 export function DashboardPage() {
   useWeatherSocket();
-  const [activeTab, setActiveTab] = useState<MobileTab>('alerts');
   const [mobileView, setMobileView] = useState<'map' | MobileTab>('conditions');
   const [desktopTab, setDesktopTab] = useState<DesktopTab>('alerts');
   const alerts = useAlertStore((s) => s.alerts);
@@ -175,7 +174,6 @@ export function DashboardPage() {
         <MobileDashboardNav
           mobileView={mobileView}
           setMobileView={setMobileView}
-          setActiveTab={setActiveTab}
         />
       </div>
     </div>

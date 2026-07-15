@@ -29,7 +29,7 @@ export class DrizzleSubscriptionRepository {
     return {
       email: row!.email,
       subscribedAt: row!.subscribedAt,
-      regions: row!.regions as string[],
+      regions: row!.regions,
     };
   }
 
@@ -48,12 +48,12 @@ export class DrizzleSubscriptionRepository {
       .where(eq(subscribers.email, email.toLowerCase()))
       .limit(1);
     if (!row) return null;
-    return { email: row.email, subscribedAt: row.subscribedAt, regions: row.regions as string[] };
+    return { email: row.email, subscribedAt: row.subscribedAt, regions: row.regions };
   }
 
   async getAll(): Promise<Subscriber[]> {
     const rows = await this.db.select().from(subscribers);
-    return rows.map((r) => ({ email: r.email, subscribedAt: r.subscribedAt, regions: r.regions as string[] }));
+    return rows.map((r) => ({ email: r.email, subscribedAt: r.subscribedAt, regions: r.regions }));
   }
 
   async getAllEmails(): Promise<string[]> {

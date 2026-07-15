@@ -8,8 +8,8 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json', ...init?.headers },
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: response.statusText }));
-    throw new Error((error as { error: string }).error ?? 'API error');
+    const error = await (response.json() as Promise<{ error?: string }>).catch(() => ({ error: response.statusText }));
+    throw new Error(error.error ?? 'API error');
   }
   return response.json() as Promise<T>;
 }

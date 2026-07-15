@@ -9,7 +9,7 @@ import {
   RecordObservationUseCase,
   ResolveAlertUseCase,
 } from '@stormwatch/application';
-import type { IIdGenerator, IEventBus } from '@stormwatch/application';
+import type { IIdGenerator } from '@stormwatch/application';
 import { InMemoryAlertRepository } from './repositories/InMemoryAlertRepository.js';
 import { DrizzleObservationRepository } from './repositories/DrizzleObservationRepository.js';
 import { InProcessEventBus } from './events/InProcessEventBus.js';

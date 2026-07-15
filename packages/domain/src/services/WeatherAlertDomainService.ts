@@ -2,7 +2,6 @@ import { AlertSeverity, AlertSeverityLevel } from '../value-objects/AlertSeverit
 import { WeatherCondition, WeatherConditionType } from '../value-objects/WeatherCondition.js';
 import { WeatherMetrics } from '../value-objects/WeatherMetrics.js';
 import { WeatherAlert } from '../entities/WeatherAlert.js';
-import { Result, ok, err } from '../core/index.js';
 
 export interface AlertAssessment {
   shouldAlert: boolean;

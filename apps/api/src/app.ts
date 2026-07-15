@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import staticFiles from '@fastify/static';
@@ -24,7 +24,7 @@ import { logger } from './infrastructure/logger.js';
  * @param testContainer  Optional DI container override for tests.
  *   When provided, DB migrations are skipped so tests run without a real DB.
  */
-export async function buildApp(testContainer?: AppContainer): Promise<ReturnType<typeof Fastify>> {
+export async function buildApp(testContainer?: AppContainer): Promise<FastifyInstance> {
   const app = Fastify({ logger: testContainer ? false : (logger as unknown as import('fastify').FastifyBaseLogger) });
 
   // ── Security ─────────────────────────────────────────────────────────────

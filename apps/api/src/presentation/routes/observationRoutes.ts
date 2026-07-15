@@ -21,7 +21,7 @@ const observationBodySchema = z.object({
   forecastFor: z.coerce.date().optional(),
 });
 
-export async function observationRoutes(app: FastifyInstance): Promise<void> {
+export function observationRoutes(app: FastifyInstance): void {
   // GET /api/v1/observations/current
   app.get(
     '/current',

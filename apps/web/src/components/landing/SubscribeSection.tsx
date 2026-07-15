@@ -49,7 +49,7 @@ export function SubscribeSection() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+          <form onSubmit={(e) => { void handleSubmit(e); }} className="flex flex-col gap-3 sm:flex-row">
             <label htmlFor={id} className="sr-only">
               Email adresa
             </label>

@@ -9,7 +9,7 @@ const querySchema = z.object({
   limit: z.coerce.number().min(1).max(100).optional(),
 });
 
-export async function alertRoutes(app: FastifyInstance): Promise<void> {
+export function alertRoutes(app: FastifyInstance): void {
   /**
    * GET /api/v1/alerts
    * Returns active alerts, optionally filtered.

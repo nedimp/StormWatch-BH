@@ -1,10 +1,11 @@
 import type { FastifyInstance } from 'fastify';
+import type { SocketStream } from '@fastify/websocket';
 
-export async function websocketRoutes(app: FastifyInstance): Promise<void> {
+export function websocketRoutes(app: FastifyInstance): void {
   app.get(
     '/alerts',
     { websocket: true },
-    (connection, _request) => {
+    (connection: SocketStream, _request) => {
       const ws = connection.socket;
       app.log.info('WebSocket client connected');
 

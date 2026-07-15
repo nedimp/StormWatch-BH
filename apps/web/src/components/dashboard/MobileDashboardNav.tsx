@@ -7,11 +7,10 @@ type MobileView = 'map' | 'alerts' | 'conditions';
 interface MobileDashboardNavProps {
   mobileView: MobileView;
   setMobileView: (v: MobileView) => void;
-  setActiveTab: (t: 'alerts' | 'conditions') => void;
 }
 
 /** Fixed-height mobile bottom navigation for the dashboard (4 tabs). */
-export function MobileDashboardNav({ mobileView, setMobileView, setActiveTab }: MobileDashboardNavProps) {
+export function MobileDashboardNav({ mobileView, setMobileView }: MobileDashboardNavProps) {
   const navigate = useNavigate();
   const alerts = useAlertStore((s) => s.alerts);
 
@@ -35,7 +34,7 @@ export function MobileDashboardNav({ mobileView, setMobileView, setActiveTab }: 
       </button>
 
       <button
-        onClick={() => { setMobileView('alerts'); setActiveTab('alerts'); }}
+        onClick={() => { setMobileView('alerts'); }}
         className={tabClass('alerts') + ' relative'}
       >
         <div className="relative">
@@ -50,7 +49,7 @@ export function MobileDashboardNav({ mobileView, setMobileView, setActiveTab }: 
       </button>
 
       <button
-        onClick={() => { setMobileView('conditions'); setActiveTab('conditions'); }}
+        onClick={() => { setMobileView('conditions'); }}
         className={tabClass('conditions')}
       >
         <Thermometer size={20} strokeWidth={1.5} />

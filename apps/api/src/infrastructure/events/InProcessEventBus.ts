@@ -7,10 +7,11 @@ type Subscriber = (eventName: string, payload: unknown) => void;
 export class InProcessEventBus {
   private readonly subscribers: Set<Subscriber> = new Set();
 
-  async publish(eventName: string, payload: unknown): Promise<void> {
+  publish(eventName: string, payload: unknown): Promise<void> {
     for (const sub of this.subscribers) {
       sub(eventName, payload);
     }
+    return Promise.resolve();
   }
 
   subscribe(subscriber: Subscriber): () => void {
