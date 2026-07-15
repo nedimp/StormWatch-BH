@@ -8,15 +8,23 @@ import { logger } from '../logger.js';
 export class GmailNotificationService implements INotificationService {
   private readonly transporter: nodemailer.Transporter | null;
 
-  constructor(private readonly subscriptionRepository: DrizzleSubscriptionRepository) {
-    const user = process.env['GMAIL_USER'];
-    const pass = process.env['GMAIL_APP_PASSWORD'];
-    if (user && pass) {
-      this.transporter = nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
-      logger.info({ user }, 'Gmail notification service initialized');
+  constructor(
+    private readonly subscriptionRepository: DrizzleSubscriptionRepository,
+    /** Optional: inject a custom transporter (used in tests to mock sending). */
+    transporter?: nodemailer.Transporter,
+  ) {
+    if (transporter) {
+      this.transporter = transporter;
     } else {
-      this.transporter = null;
-      logger.warn('GMAIL credentials not set — email notifications disabled');
+      const user = process.env['GMAIL_USER'];
+      const pass = process.env['GMAIL_APP_PASSWORD'];
+      if (user && pass) {
+        this.transporter = nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
+        logger.info({ user }, 'Gmail notification service initialized');
+      } else {
+        this.transporter = null;
+        logger.warn('GMAIL credentials not set — email notifications disabled');
+      }
     }
   }
 
