@@ -4,7 +4,7 @@ import { SEVERITY_ORDER, SEVERITY_COLORS, SEVERITY_LABELS } from '../../constant
 import { ALERTS_REFETCH_MS } from '../../constants/api';
 import { useAlertStore } from '../../store/alertStore';
 import { AlertCard } from './AlertCard';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { alertsApi } from '../../services/api';
 import type { AlertSeverity } from '../../types';
 
@@ -12,7 +12,6 @@ export function AlertList() {
   const { alerts, setAlerts } = useAlertStore();
   const [query, setQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState<AlertSeverity | null>(null);
-  const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ['alerts'],

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useState, useMemo } from 'react';
 import type { ElementType } from 'react';
 import { Activity, Thermometer, Map as MapIcon } from 'lucide-react';
 import { SEVERITY_COLORS, SEVERITY_LABELS, SEVERITY_ORDER } from '../constants/severity';
@@ -13,25 +13,40 @@ const WeatherMap = lazy(() =>
   import('../components/map/WeatherMap').then((m) => ({ default: m.WeatherMap })),
 );
 
-type Tab = 'alerts' | 'conditions';
+/** View options for the mobile bottom navigation. */
+type MobileTab = 'alerts' | 'conditions';
+
+/** View options for the desktop tab bar. */
 type DesktopTab = 'alerts' | 'conditions' | 'map';
+
+/** Framed map height — same value used on both desktop and mobile. */
+const MAP_FRAME_HEIGHT = { height: '60vh', minHeight: 320 } as const;
+const MAP_FRAME_HEIGHT_MOBILE = { height: '55vh', minHeight: 280 } as const;
 
 export function DashboardPage() {
   useWeatherSocket();
-  const [activeTab, setActiveTab] = useState<Tab>('alerts');          // mobile
-  const [mobileView, setMobileView] = useState<'map' | Tab>('conditions');
-  const [desktopTab, setDesktopTab] = useState<DesktopTab>('alerts');  // desktop
+  const [activeTab, setActiveTab] = useState<MobileTab>('alerts');
+  const [mobileView, setMobileView] = useState<'map' | MobileTab>('conditions');
+  const [desktopTab, setDesktopTab] = useState<DesktopTab>('alerts');
   const alerts = useAlertStore((s) => s.alerts);
 
-  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] = [
-    { id: 'alerts',     label: 'Upozorenja',     Icon: Activity,    count: alerts.filter(a => !a.isForecasted).length || undefined },
-    { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
-    { id: 'map',        label: 'Karta',           Icon: MapIcon },
-  ];
+  // Memoised so the array reference is stable — avoids unnecessary re-renders of tab buttons
+  const observedAlertCount = useMemo(
+    () => alerts.filter((a) => !a.isForecasted).length,
+    [alerts],
+  );
+  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] = useMemo(
+    () => [
+      { id: 'alerts',     label: 'Upozorenja',     Icon: Activity,    count: observedAlertCount || undefined },
+      { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
+      { id: 'map',        label: 'Karta',           Icon: MapIcon },
+    ],
+    [observedAlertCount],
+  );
 
   return (
     <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
-      {/* ── Desktop nav (Karta toggle now handled by tabs, so no extra props) ── */}
+      {/* ── Desktop nav ── */}
       <TopNav page="dashboard" />
 
       {/* ── DESKTOP layout (md+): full-width tabbed panel ── */}
@@ -72,7 +87,7 @@ export function DashboardPage() {
           {desktopTab === 'conditions' && <CurrentConditionsPanel />}
           {desktopTab === 'map' && (
             <div className="flex flex-col h-full overflow-y-auto">
-              <div className="relative shrink-0" style={{ height: '60vh', minHeight: 320 }}>
+              <div className="relative shrink-0" style={MAP_FRAME_HEIGHT}>
                 <Suspense fallback={
                   <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
                 }>
@@ -104,7 +119,7 @@ export function DashboardPage() {
             {/* Framed map */}
             <div
               className="relative border-b border-slate-200"
-              style={{ height: '55vh', minHeight: 280 }}
+              style={MAP_FRAME_HEIGHT_MOBILE}
             >
               <Suspense
                 fallback={
