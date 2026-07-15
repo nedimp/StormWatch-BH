@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { CloudLightning, Home, ArrowRight, Bell, Activity } from 'lucide-react';
-import { TopNav } from '../components/dashboard/TopNav';
+import { TopNav } from '../components/shared/TopNav';
 import { SubscribeSection } from '../components/landing/SubscribeSection';
 import { MobileLandingNav } from '../components/landing/MobileLandingNav';
 import { LiveAlertBanner } from '../components/landing/LiveAlertBanner';

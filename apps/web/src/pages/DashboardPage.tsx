@@ -1,6 +1,6 @@
 import { Suspense, lazy, useState } from 'react';
 import { Activity } from 'lucide-react';
-import { TopNav } from '../components/dashboard/TopNav';
+import { TopNav } from '../components/shared/TopNav';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
 import { AlertList } from '../components/alerts/AlertList';
 import { CurrentConditionsPanel } from '../components/dashboard/CurrentConditionsPanel';

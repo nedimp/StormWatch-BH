@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { CloudLightning, ArrowRight, Home, Map as MapIcon, List } from 'lucide-react';
-import { StatsBar } from './StatsBar';
+import { StatsBar } from '../dashboard/StatsBar';
 
 interface TopNavProps {
   page: 'landing' | 'dashboard';
