@@ -115,4 +115,47 @@ describe('WeatherAlertDomainService', () => {
       expect(service.canResolve(metrics)).toBe(false);
     });
   });
+
+  describe('assessForecast', () => {
+    it('discounts severity by one level (CRITICAL → HIGH)', () => {
+      // Extreme wind would be CRITICAL if observed — forecast discounts to HIGH
+      const metrics = makeMetrics({ windSpeedKmh: 95, windGustKmh: 130 });
+      const assessment = service.assessForecast(metrics, 24);
+      expect(assessment.shouldAlert).toBe(true);
+      expect(assessment.severity.level).toBe(AlertSeverityLevel.HIGH);
+    });
+
+    it('discounts severity by one level (HIGH → MEDIUM)', () => {
+      // Strong wind (not extreme) would be HIGH — forecast discounts to MEDIUM
+      const metrics = makeMetrics({ windSpeedKmh: 65, windGustKmh: 85 });
+      const assessment = service.assessForecast(metrics, 48);
+      expect(assessment.shouldAlert).toBe(true);
+      expect(assessment.severity.level).toBe(AlertSeverityLevel.MEDIUM);
+    });
+
+    it('drops LOW severity forecasts (not actionable)', () => {
+      // Frost would be LOW — forecast of LOW is not worth alerting
+      const metrics = makeMetrics({ temperatureCelsius: -6 });
+      const assessment = service.assessForecast(metrics, 72);
+      expect(assessment.shouldAlert).toBe(false);
+    });
+
+    it('does not alert for below-threshold forecast conditions', () => {
+      const metrics = makeMetrics(); // normal conditions
+      const assessment = service.assessForecast(metrics, 24);
+      expect(assessment.shouldAlert).toBe(false);
+    });
+
+    it('adds Bosnian lead-time prefix to title', () => {
+      const metrics = makeMetrics({ windSpeedKmh: 95, windGustKmh: 130 });
+      const assessment = service.assessForecast(metrics, 20); // ~"danas kasno"
+      expect(assessment.title).toMatch(/^Prognoza \(/);
+    });
+
+    it('includes forecast uncertainty recommendation', () => {
+      const metrics = makeMetrics({ windSpeedKmh: 95, windGustKmh: 130 });
+      const assessment = service.assessForecast(metrics, 24);
+      expect(assessment.recommendations[0]).toMatch(/prognoz/i);
+    });
+  });
 });

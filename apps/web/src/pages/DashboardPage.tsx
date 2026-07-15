@@ -31,18 +31,21 @@ export function DashboardPage() {
   const alerts = useAlertStore((s) => s.alerts);
 
   // Memoised so the array reference is stable — avoids unnecessary re-renders of tab buttons
-  const observedAlertCount = useMemo(
-    () => alerts.filter((a) => !a.isForecasted).length,
-    [alerts],
-  );
-  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] = useMemo(
-    () => [
-      { id: 'alerts',     label: 'Upozorenja',     Icon: Activity,    count: observedAlertCount || undefined },
-      { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
-      { id: 'map',        label: 'Karta',           Icon: MapIcon },
-    ],
-    [observedAlertCount],
-  );
+  const observedAlertCount = useMemo(() => alerts.filter((a) => !a.isForecasted).length, [alerts]);
+  const desktopTabs: { id: DesktopTab; label: string; Icon: ElementType; count?: number }[] =
+    useMemo(
+      () => [
+        {
+          id: 'alerts',
+          label: 'Upozorenja',
+          Icon: Activity,
+          count: observedAlertCount || undefined,
+        },
+        { id: 'conditions', label: 'Trenutni uslovi', Icon: Thermometer },
+        { id: 'map', label: 'Karta', Icon: MapIcon },
+      ],
+      [observedAlertCount],
+    );
 
   return (
     <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
@@ -88,39 +91,46 @@ export function DashboardPage() {
           {desktopTab === 'map' && (
             <div className="flex flex-col h-full overflow-y-auto">
               <div className="relative shrink-0" style={MAP_FRAME_HEIGHT}>
-                <Suspense fallback={
-                  <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
-                }>
+                <Suspense
+                  fallback={
+                    <div className="flex h-full items-center justify-center text-slate-400 text-sm">
+                      Učitavanje karte...
+                    </div>
+                  }
+                >
                   <WeatherMap />
                 </Suspense>
               </div>
               <div className="p-5 border-t border-slate-100 bg-white">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Legenda upozorenja</p>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">
+                  Legenda upozorenja
+                </p>
                 <div className="grid grid-cols-4 gap-3">
                   {SEVERITY_ORDER.map((sev) => (
                     <div key={sev} className="flex items-center gap-2">
-                      <span className="shrink-0 h-4 w-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: SEVERITY_COLORS[sev] }} />
+                      <span
+                        className="shrink-0 h-4 w-4 rounded-full border-2 border-white shadow-sm"
+                        style={{ backgroundColor: SEVERITY_COLORS[sev] }}
+                      />
                       <span className="text-xs text-slate-600">{SEVERITY_LABELS[sev]}</span>
                     </div>
                   ))}
                 </div>
-                <p className="mt-3 text-[10px] text-slate-400">Veći krug = veća ozbiljnost. Kliknite na marker za detalje.</p>
+                <p className="mt-3 text-[10px] text-slate-400">
+                  Veći krug = veća ozbiljnost. Kliknite na marker za detalje.
+                </p>
               </div>
             </div>
           )}
         </div>
       </main>
 
-
       {/* ── MOBILE layout (<md) ── */}
       <div className="flex md:hidden flex-col flex-1 overflow-hidden">
         {mobileView === 'map' ? (
           <div className="flex-1 overflow-y-auto">
             {/* Framed map */}
-            <div
-              className="relative border-b border-slate-200"
-              style={MAP_FRAME_HEIGHT_MOBILE}
-            >
+            <div className="relative border-b border-slate-200" style={MAP_FRAME_HEIGHT_MOBILE}>
               <Suspense
                 fallback={
                   <div className="flex h-full items-center justify-center text-slate-400 text-sm">
@@ -131,7 +141,7 @@ export function DashboardPage() {
                 <WeatherMap />
               </Suspense>
             </div>
-            {/* Severity legend — entity colors removed (map now shows only active alerts) */}
+            {/* Severity legend */}
             <div className="p-4 bg-white">
               <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">
                 Legenda upozorenja
