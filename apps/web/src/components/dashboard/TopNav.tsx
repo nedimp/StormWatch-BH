@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { CloudLightning, ArrowRight, Home } from 'lucide-react';
+import { CloudLightning, ArrowRight, Home, Map as MapIcon, List } from 'lucide-react';
 import { StatsBar } from './StatsBar';
 
 interface TopNavProps {
   page: 'landing' | 'dashboard';
+  /** Desktop view toggle — only used when page='dashboard' */
+  desktopView?: 'list' | 'map';
+  onToggleDesktopView?: () => void;
 }
 
-export function TopNav({ page }: TopNavProps) {
+export function TopNav({ page, desktopView, onToggleDesktopView }: TopNavProps) {
   const navigate = useNavigate();
   const isLanding = page === 'landing';
 
@@ -59,6 +62,16 @@ export function TopNav({ page }: TopNavProps) {
           ) : (
             <>
               <StatsBar compact />
+              {onToggleDesktopView && (
+                <button
+                  onClick={onToggleDesktopView}
+                  className="hidden lg:flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+                >
+                  {desktopView === 'map'
+                    ? <><List size={11} /> Lista</>
+                    : <><MapIcon size={11} /> Karta</>}
+                </button>
+              )}
               <a
                 href="/docs"
                 target="_blank"

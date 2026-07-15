@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState } from 'react';
-import { Activity, Map as MapIcon, List } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { TopNav } from '../components/dashboard/TopNav';
 import { useWeatherSocket } from '../hooks/useWeatherSocket';
 import { AlertList } from '../components/alerts/AlertList';
@@ -23,51 +23,25 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
-      {/* ── Desktop nav ── */}
-      <TopNav page="dashboard" />
+      {/* ── Desktop nav (with Karta/Lista toggle) ── */}
+      <TopNav
+        page="dashboard"
+        desktopView={desktopView}
+        onToggleDesktopView={() => setDesktopView((v) => v === 'list' ? 'map' : 'list')}
+      />
 
       {/* ── DESKTOP layout (md+): stations list + alerts sidebar ── */}
       <main className="hidden md:flex flex-1 overflow-hidden pt-16">
-        {/* Left panel: stations list OR map — toggled by buttons in the header */}
-        <div className="flex-1 flex flex-col overflow-hidden border-r border-slate-200">
-          {/* Panel header with Lista / Karta toggle */}
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-200 shrink-0">
-            <span className="text-xs font-semibold text-slate-500">
-              {desktopView === 'list' ? 'Trenutni uslovi' : 'Karta'}
-            </span>
-            <div className="flex items-center gap-1 rounded-lg border border-slate-200 p-0.5">
-              <button
-                onClick={() => setDesktopView('list')}
-                className={'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition ' +
-                  (desktopView === 'list' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-700')}
-              >
-                <List size={11} />
-                Lista
-              </button>
-              <button
-                onClick={() => setDesktopView('map')}
-                className={'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition ' +
-                  (desktopView === 'map' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-700')}
-              >
-                <MapIcon size={11} />
-                Karta
-              </button>
-            </div>
-          </div>
-
-          {/* Content */}
+        {/* Left panel: stations list OR map */}
+        <div className="flex-1 overflow-hidden border-r border-slate-200">
           {desktopView === 'list' ? (
-            <div className="flex-1 overflow-hidden">
-              <CurrentConditionsPanel />
-            </div>
+            <CurrentConditionsPanel />
           ) : (
-            <div className="flex-1 overflow-hidden">
-              <Suspense fallback={
-                <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
-              }>
-                <WeatherMap />
-              </Suspense>
-            </div>
+            <Suspense fallback={
+              <div className="flex h-full items-center justify-center text-slate-400 text-sm">Učitavanje karte...</div>
+            }>
+              <WeatherMap />
+            </Suspense>
           )}
         </div>
 
