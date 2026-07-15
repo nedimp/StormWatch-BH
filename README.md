@@ -142,7 +142,7 @@ ACTIVE → ESCALATED (severity rises) → RESOLVED (conditions clear) | EXPIRED 
 | Mobile responsive (safe-area, bottom nav, dvh) | ✅ |
 | Rate limiting, Helmet, CORS | ✅ |
 | Domain tests | ✅ 30/30 |
-| Application / API / frontend tests | ❌ Not yet |
+| Application / API / frontend tests | ✅ 96 tests |
 | HTTPS | ❌ HTTP only (DNS not configured for subdomain) |
 | Alert persistence in PostgreSQL | ❌ In-memory (alerts are transient by design) |
 | Authentication on POST /observations | ❌ Open endpoint |
@@ -153,16 +153,28 @@ ACTIVE → ESCALATED (severity rises) → RESOLVED (conditions clear) | EXPIRED 
 
 ```
 packages/domain/src/__tests__/
-  ValueObjects.test.ts             (9 tests)  — Coordinates, WeatherMetrics, AlertSeverity
-  WeatherAlert.test.ts             (9 tests)  — lifecycle, escalation, domain events
-  WeatherAlertDomainService.test.ts (12 tests) — threshold assessment for all conditions
+  ValueObjects.test.ts              (9 tests)  — Coordinates, WeatherMetrics, AlertSeverity
+  WeatherAlert.test.ts              (9 tests)  — lifecycle, escalation, domain events
+  WeatherAlertDomainService.test.ts (18 tests) — all thresholds + assessForecast severity discount
+
+packages/application/src/__tests__/
+  RecordObservationUseCase.test.ts  (11 tests) — calm/severe/forecast/deduplication, region name resolution
+
+apps/api/src/__tests__/
+  GmailNotificationService.test.ts  (14 tests) — welcome email, alert emails, forecast emails, empty list
+  routes.test.ts                    (11 tests) — all HTTP routes via Fastify inject() (no real DB/network)
+
+apps/weather-worker/src/__tests__/
+  OpenMeteoAdapter.test.ts          (10 tests) — current + batch + forecast adapter with mocked fetch
+
+apps/web/src/__tests__/
+  components.test.tsx               (14 tests) — AlertCard, StationRow render + toggle interaction
 ```
 
-**Coverage gaps:**
-- `packages/application` — use case orchestration untested
-- `apps/api` — no route/integration tests (Fastify `inject()`)
-- `apps/weather-worker` — adapter fetch logic untested
-- `apps/web` — no component/hook tests
+Run all 96 tests locally:
+```bash
+pnpm -r test
+```
 
 ---
 
